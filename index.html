@@ -2,1101 +2,556 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MBTI 16种性格测试</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MBTI性格特征测试</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            -webkit-tap-highlight-color: transparent;
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #ff9800;
+            --text-color: #333;
+            --light-text: #666;
+            --border-color: #e0e0e0;
+            --bg-color: #f0f2f5;
+            --card-bg: white;
         }
         
         body {
-            background-color: #f5f7fa;
-            color: #333;
-            line-height: 1.6;
-            padding: 15px;
-            max-width: 800px;
+            font-family: "微软雅黑", "PingFang SC", sans-serif;
+            max-width: 1000px;
             margin: 0 auto;
-            min-height: 100vh;
-        }
-        
-        .container {
-            background-color: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             padding: 20px;
-            margin-bottom: 20px;
-            position: relative;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
         }
-        
+
+        .container {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.08);
+            margin: 30px 0;
+            transition: all 0.3s ease;
+        }
+
         h1 {
+            color: var(--primary-color);
             text-align: center;
-            color: #4a6baf;
-            margin-bottom: 20px;
-            font-size: 24px;
-            padding-top: 10px;
+            margin-bottom: 30px;
+            font-size: clamp(1.8em, 3vw, 2.3em);
+            font-weight: 600;
         }
-        
-        .intro {
-            margin-bottom: 20px;
-            font-size: 15px;
-            color: #666;
+
+        .select-section {
             text-align: center;
-            line-height: 1.5;
+            margin-bottom: 40px;
         }
-        
-        .signature {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 14px;
-            color: #888;
-            font-style: italic;
-        }
-        
-        .progress-container {
-            width: 100%;
-            background-color: #e0e0e0;
-            border-radius: 5px;
-            margin: 20px 0;
-            height: 8px;
-            overflow: hidden;
-        }
-        
-        .progress-bar {
-            height: 100%;
-            border-radius: 5px;
-            background-color: #4a6baf;
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-        
-        .progress-text {
-            text-align: center;
-            font-size: 14px;
-            color: #666;
-            margin-bottom: 10px;
-        }
-        
-        .question-container {
-            display: none;
-        }
-        
-        .question-container.active {
-            display: block;
-            animation: fadeIn 0.5s;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        
-        .question {
-            font-weight: bold;
-            margin-bottom: 15px;
-            font-size: 18px;
-            line-height: 1.4;
-        }
-        
-        .score-count {
-            font-weight: normal;
-            font-size: 14px;
-            color: #666;
-        }       
-        
-        .dimension-count {
-            font-weight: normal;
-            font-size: 14px;
-            color: #666;
-            margin-left: 10px;
-        }       
-        
-        .options {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 5px;
-        }
-        
-        .option {
-            background-color: #f5f7fa;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s;
-            position: relative;
-            user-select: none;
-        }
-        
-        .option:hover {
-            background-color: #e8f0fe;
-            border-color: #4a6baf;
-        }
-        
-        .option.selected {
-            background-color: #e8f0fe;
-            border-color: #4a6baf;
-            box-shadow: 0 0 0 2px rgba(74, 107, 175, 0.3);
-        }
-        
-        .option-text {
-            display: block;
-            padding-left: 30px;
-            line-height: 1.4;
-        }
-        
-        .option input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-        
-        .checkmark {
-            position: absolute;
-            top: 16px;
-            left: 15px;
-            height: 20px;
-            width: 20px;
-            background-color: #fff;
-            border-radius: 50%;
-            border: 2px solid #ccc;
-        }
-        
-        .option.selected .checkmark {
-            background-color: #4a6baf;
-            border-color: #4a6baf;
-        }
-        
-        .checkmark:after {
-            content: "";
-            position: absolute;
-            display: none;
-        }
-        
-        .option.selected .checkmark:after {
-            display: block;
-            left: 6px;
-            top: 2px;
-            width: 5px;
-            height: 10px;
-            border: solid white;
-            border-width: 0 2px 2px 0;
-            transform: rotate(45deg);
-        }
-        
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 25px;
-            gap: 15px;
-        }
-        
-        button {
-            background-color: #4a6baf;
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s;
-            flex: 1;
-            min-height: 48px;
-        }
-        
-        button:hover {
-            background-color: #3a5a9f;
-        }
-        
-        button:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        
-        .result-container {
-            display: none;
-            text-align: center;
-            padding: 10px;
-            position: relative;
-        }
-        
-        .result-title {
-            font-size: 22px;
-            color: #4a6baf;
-            margin-bottom: 20px;
-            padding-top: 10px;
-        }
-        
-        .result-type {
-            font-size: 32px;
-            font-weight: bold;
-            color: #2c3e50;
-            margin: 20px 0;
-            padding: 15px 20px;
-            background-color: #f0f4f8;
-            border-radius: 8px;
+
+        .select-wrapper {
             display: inline-block;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .result-description {
-            text-align: left;
-            margin-top: 20px;
-            line-height: 1.8;
-            padding: 0 5px;
-        }
-        
-        .dimension {
-            margin-bottom: 20px;
-        }
-        
-        .dimension-title {
-            font-weight: bold;
-            margin-bottom: 8px;
-            font-size: 16px;
-        }
-        
-        .dimension-bar {
-            height: 20px;
-            background-color: #e0e0e0;
-            border-radius: 10px;
             position: relative;
-            margin-bottom: 5px;
-            overflow: hidden;
         }
-        
-        .dimension-fill {
-            height: 100%;
-            border-radius: 10px;
-            background-color: #4a6baf;
-            width: 50%;
+
+        label[for="mbtiSelect"] {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-color);
         }
-        
-        .dimension-labels {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            color: #666;
-        }
-        
-        .restart-btn {
-            margin-top: 30px;
-            background-color: #4a6baf;
-            padding: 15px 25px;
+
+        select {
+            padding: 16px 25px;
             font-size: 18px;
-            border-radius: 8px;
+            width: 100%;
+            min-width: 300px;
+            max-width: 350px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            outline: none;
+            appearance: none;
+            cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23333' width='24px' height='24px'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            transition: all 0.3s;
         }
-        
-        .type-description {
-            margin-top: 25px;
+
+        select:hover, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+        }
+
+        .result-table {
+            width: 100%;
+            margin-top: 30px;
+            border-collapse: collapse;
+            overflow-x: auto;
+            display: block;
+        }
+
+        .result-table th {
+            background: #f8f9fa;
+            font-weight: 500;
             padding: 15px;
-            background-color: #f8f9fa;
-            border-radius: 8px;
-            line-height: 1.7;
+            border-bottom: 2px solid var(--border-color);
             text-align: left;
+            width: 22%;
+            color: var(--text-color);
+            position: sticky;
+            top: 0;
+        }
+
+        .result-table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color);
+            line-height: 1.7;
+            font-size: 1em;
+        }
+
+        .characteristic {
+            color: var(--primary-color);
+            font-weight: 600;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .life-summary {
+            white-space: pre-wrap;
+            margin-top: 15px;
+            color: var(--light-text);
+            font-size: 0.95em;
+            line-height: 1.8;
+        }
+
+        .animal-icon {
+            font-size: 1.2em;
+            margin-left: 5px;
+            color: var(--secondary-color);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
         }
         
-        @media (max-width: 600px) {
+        .spinner {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
             
             .container {
-                padding: 15px;
+                padding: 20px;
             }
             
-            h1 {
-                font-size: 22px;
-                margin-bottom: 15px;
+            .result-table th, 
+            .result-table td {
+                padding: 12px 10px;
+                font-size: 0.95em;
             }
             
-            .question {
-                font-size: 17px;
-            }
-            
-            .option {
-                padding: 12px 15px;
-            }
-            
-            .option-text {
-                padding-left: 28px;
-            }
-            
-            .checkmark {
-                top: 13px;
-            }
-            
-            button {
-                padding: 12px 15px;
-                font-size: 15px;
-            }
-            
-            .result-title {
-                font-size: 20px;
-            }
-            
-            .result-type {
-                font-size: 28px;
-                padding: 12px 18px;
-            }
-            
-            .dimension-title {
-                font-size: 15px;
-            }
-            
-            .restart-btn {
+            select {
                 padding: 14px 20px;
                 font-size: 16px;
+                min-width: 250px;
             }
         }
-        
-        @media (max-width: 400px) {
-            .option-text {
-                font-size: 15px;
+
+        @media (max-width: 480px) {
+            .result-table {
+                display: table;
+                width: 100%;
             }
             
-            .question {
-                font-size: 16px;
+            .result-table th {
+                width: auto;
+                display: block;
+                position: static;
             }
             
-            button {
-                min-height: 44px;
+            .result-table td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="signature">@点亮心灵Miss徐</div>
-        <h1>MBTI 16种性格测试</h1>
-        <div class="intro">
-            本测试包含58道题目，预计需要5-10分钟完成。<br>请根据你的第一感觉选择最符合你的选项。
-        </div>
-        
-        <div class="progress-container">
-            <div class="progress-bar" id="progressBar"></div>
-        </div>
-        <div class="progress-text" id="progressText">1/58</div>
-        
-        <!-- 测试问题部分 -->
-        <div id="testContainer">
-            <!-- 问题将通过JavaScript动态生成 -->
-        </div>
-        
-        <!-- 结果展示部分 -->
-        <div class="result-container" id="resultContainer">
-            <div class="signature">@点亮心灵Miss徐</div>
-            <div class="result-title">你的性格类型是</div>
-            <div class="result-type" id="resultType"></div>
-            
-            <div class="result-description">
-                <div id="dimensionEI" class="dimension">
-                    <div class="dimension-title">外向(E) - 内向(I) <span id="countEI" class="dimension-count"></span></div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="fillEI"></div>
-                    </div>
-                    <div class="dimension-labels">
-                        <span>外向(E)</span>
-                        <span>内向(I)</span>
-                    </div>
-                </div>
-                
-                <div id="dimensionSN" class="dimension">
-                    <div class="dimension-title">实感(S) - 直觉(N) <span id="countSN" class="dimension-count"></span></div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="fillSN"></div>
-                    </div>
-                    <div class="dimension-labels">
-                        <span>实感(S)</span>
-                        <span>直觉(N)</span>
-                    </div>
-                </div>
-                
-                <div id="dimensionTF" class="dimension">
-                    <div class="dimension-title">思考(T) - 情感(F) <span id="countTF" class="dimension-count"></span></div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="fillTF"></div>
-                    </div>
-                    <div class="dimension-labels">
-                        <span>思考(T)</span>
-                        <span>情感(F)</span>
-                    </div>
-                </div>
-                
-                <div id="dimensionJP" class="dimension">
-                    <div class="dimension-title">判断(J) - 感知(P) <span id="countJP" class="dimension-count"></span></div>
-                    <div class="dimension-bar">
-                        <div class="dimension-fill" id="fillJP"></div>
-                    </div>
-                    <div class="dimension-labels">
-                        <span>判断(J)</span>
-                        <span>感知(P)</span>
-                    </div>
-                </div>
-                
-                <div id="typeDescription" class="type-description"></div>
+        <h1>MBTI性格特征测试</h1>
+        <div class="select-section">
+            <div class="select-wrapper">
+                <label for="mbtiSelect">选择您的MBTI类型</label>
+                <select id="mbtiSelect" required>
+                    <option value="" disabled selected>请选择MBTI性格类型</option>
+                    <option value="INTJ">INTJ - 建筑师/战略家</option>
+                    <option value="INTP">INTP - 逻辑学家/思想家</option>
+                    <option value="ENTJ">ENTJ - 指挥官/领导者</option>
+                    <option value="ENTP">ENTP - 辩论家/发明家</option>
+                    <option value="INFJ">INFJ - 倡导者/咨询师</option>
+                    <option value="INFP">INFP - 调停者/理想主义者</option>
+                    <option value="ENFJ">ENFJ - 主人公/导师</option>
+                    <option value="ENFP">ENFP - 竞选者/激发者</option>
+                    <option value="ISTJ">ISTJ - 物流师/检查员</option>
+                    <option value="ISFJ">ISFJ - 守卫者/保护者</option>
+                    <option value="ESTJ">ESTJ - 总经理/监督者</option>
+                    <option value="ESFJ">ESFJ - 执政官/供给者</option>
+                    <option value="ISTP">ISTP - 鉴赏家/巧匠</option>
+                    <option value="ISFP">ISFP - 探险家/艺术家</option>
+                    <option value="ESTP">ESTP - 企业家/实践者</option>
+                    <option value="ESFP">ESFP - 表演者/娱乐者</option>
+                </select>
             </div>
-            
-            <button class="restart-btn" id="restartBtn">重新测试</button>
         </div>
+
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+        </div>
+
+        <table class="result-table" id="resultTable"></table>
     </div>
 
     <script>
-        // 测试问题数据
-        const questions = [
-            // E/I 维度问题 (1-17)
-            {
-                question: "1. 与他人相处时更加精力充沛 vs 独处时精力充沛",
-                dimension: "EI",
-                options: [
-                    { text: "与他人相处时更加精力充沛", value: "E" },
-                    { text: "独处时精力充沛", value: "I" }
-                ]
+        // 完整16型MBTI数据
+        const mbtiData = {
+            "INTJ": {
+                "代号": "建筑师 / 战略家",
+                "优点": "战略思维强，独立思考，目标明确，高效执行",
+                "缺点": "过于理性，忽视情感；固执己见，难以妥协；对他人要求苛刻；容易过度自信",
+                "座右铭": "如果计划不够完美，那就不是计划。",
+                "最佳伴侣": "ENFP、ENTP",
+                "适合岗位": "战略规划师、系统架构师、管理咨询顾问、投资银行家、科研项目负责人",
+                "受欢迎程度排名": "5",
+                "稀有度": "2.1%，排名第3",
+                "恋爱脑表现": "【低】谨慎策划、理性主导、隐藏深情",
+                "对应动物": "猫头鹰",
+                "人生总结": "【战略家与革新者】早年：独立思考，沉迷知识，常被视为“怪才”。中年：制定长期目标，在专业领域成为权威，追求效率与创新。晚年：留下系统性遗产（著作、理论或企业），但可能因疏于情感而孤独。总结：用理性构建世界，用远见改变规则，但情感世界可能荒芜。"
             },
-            {
-                question: "2. 公共场合希望自己成为注意的焦点 vs 尽量避免成为注意的焦点",
-                dimension: "EI",
-                options: [
-                    { text: "公共场合希望自己成为注意的焦点", value: "E" },
-                    { text: "公共场合尽量避免成为注意的焦点", value: "I" }
-                ]
+            "INTP": {
+                "代号": "逻辑学家 / 思想家",
+                "优点": "逻辑严密，好奇心旺盛，创新思维，知识渊博",
+                "缺点": "拖延症严重；过度追求理论，忽视实践；社交能力较弱；容易三分钟热度",
+                "座右铭": "理论先行，实践…等我兴趣来了再说。",
+                "最佳伴侣": "ENTJ、INFJ",
+                "适合岗位": "数据科学家、理论研究学者、软件工程师、人工智能研究员、哲学教授",
+                "受欢迎程度排名": "16",
+                "稀有度": "3.3%，排名第7",
+                "恋爱脑表现": "【低】思维优先、被动慢热、情感迟钝",
+                "对应动物": "章鱼",
+                "人生总结": "【永恒的探索者】早年：好奇心旺盛，涉猎广泛但难以专注。中年：在科学、哲学或技术领域深耕，提出颠覆性理论。晚年：被后人视为“天才”，但可能因拖延而未完成毕生项目。总结：思维无边界，现实执行力是短板，一生在解构与重建中度过。"
             },
-            {
-                question: "3. 行动之后再思考 vs 思考之后再行动",
-                dimension: "EI",
-                options: [
-                    { text: "行动之后再思考", value: "E" },
-                    { text: "思考之后再行动", value: "I" }
-                ]
+            "ENTJ": {
+                "代号": "指挥官 / 领导者",
+                "优点": "决策果断，目标导向，善于规划，天生领导者",
+                "缺点": "控制欲过强；缺乏耐心，容易急躁；忽视他人感受；过于结果导向",
+                "座右铭": "要么领导，要么让路。",
+                "最佳伴侣": "INTP、INTJ",
+                "适合岗位": "CEO/企业高管、军事指挥官、政治领袖、创业公司创始人、金融分析师",
+                "受欢迎程度排名": "11",
+                "稀有度": "1.8%，排名第2",
+                "恋爱脑表现": "【低】目标导向、强势追求、控制倾向",
+                "对应动物": "狮子",
+                "人生总结": "【征服与统治】早年：学生领袖，野心勃勃，制定人生规划。中年：掌控企业或组织，以铁腕手段推动变革。晚年：成为行业教父，但可能因强势疏远亲人。总结：一生在挑战中攀登巅峰，但需学会柔软才能不留遗憾。"
             },
-            {
-                question: "4. 喜欢想到什么就分享出来 vs 喜欢自己思考，不去随意表露",
-                dimension: "EI",
-                options: [
-                    { text: "喜欢想到什么就分享出来", value: "E" },
-                    { text: "喜欢自己思考，不去随意表露", value: "I" }
-                ]
+            "ENTP": {
+                "代号": "辩论家 / 发明家",
+                "优点": "思维敏捷，善于辩论，点子多样，挑战传统",
+                "缺点": "喜欢争论，容易抬杠；缺乏执行力；容易厌倦常规；有时显得不够真诚",
+                "座右铭": "我不是杠精，我只是在帮你找到逻辑漏洞。",
+                "最佳伴侣": "INFJ、INTJ",
+                "适合岗位": "创新顾问、风险投资人、市场营销总监、律师（辩护方向）、产品经理",
+                "受欢迎程度排名": "8",
+                "稀有度": "3%，排名第5",
+                "恋爱脑表现": "【中】智性吸引、兴趣多变、逃避承诺",
+                "对应动物": "狐狸",
+                "人生总结": "【挑战与颠覆】早年：诡辩天才，热衷辩论，兴趣多变。中年：创业或成为意见领袖，靠敏捷思维取胜。晚年：被铭记为“思想的火花”，但可能因缺乏坚持而错过巅峰。总结：用智慧点燃世界，但需专注才能让火焰持久。"
             },
-            {
-                question: "5. 擅长解读和了解，可以随意分享个人信息 vs 更愿意一个人呆着，或在自己喜欢的小群体中分享",
-                dimension: "EI",
-                options: [
-                    { text: "擅长解读和了解，可以随意分享个人信息", value: "E" },
-                    { text: "更愿意一个人呆着，或在自己喜欢的小群体中分享", value: "I" }
-                ]
+            "INFJ": {
+                "代号": "倡导者 / 咨询师",
+                "优点": "洞察力深刻，富有同理心，坚持理想，善于激励他人",
+                "缺点": "过度理想化；容易内耗，自我批判；回避冲突，压抑情绪；对他人期待过高",
+                "座右铭": "在黑暗中做他人的光。",
+                "最佳伴侣": "ENFP、ENTP",
+                "适合岗位": "心理咨询师、人力资源总监、作家/编剧、社会工作者、教育顾问",
+                "受欢迎程度排名": "6",
+                "稀有度": "1.5%，排名第1",
+                "恋爱脑表现": "【中】灵魂共鸣、过度共情、隐藏占有欲",
+                "对应动物": "狼",
+                "人生总结": "【理想与救赎】早年：敏感早慧，寻求人生意义。中年：投身公益、心理学或艺术，影响他人心灵。晚年：被视为“精神导师”，但可能因过度共情而疲惫。总结：燃烧自己照亮他人，但需学会自我保护。"
             },
-            {
-                question: "6. 说的比听的多 vs 听的比说的多",
-                dimension: "EI",
-                options: [
-                    { text: "说的比听的多", value: "E" },
-                    { text: "听的比说的多", value: "I" }
-                ]
+            "INFP": {
+                "代号": "调停者 / 理想主义者",
+                "优点": "理想主义，富有创造力，真诚待人，善于共情",
+                "缺点": "过于敏感，容易受伤；优柔寡断，行动力弱；逃避现实，沉溺幻想；容易自我否定",
+                "座右铭": "世界可以残酷，但不必失去温柔。",
+                "最佳伴侣": "ENFJ、INFJ",
+                "适合岗位": "诗人/作家、艺术治疗师、编辑/翻译、人类学家、特殊教育教师",
+                "受欢迎程度排名": "10",
+                "稀有度": "3.2%，排名第6",
+                "恋爱脑表现": "【高】浪漫幻想、被动等待、情感依赖",
+                "对应动物": "鹿",
+                "人生总结": "【诗意与挣扎】早年：内向幻想，在文学或艺术中逃避现实。中年：通过创作或心理咨询表达内心，寻找归属。晚年：留下感动人心的作品，但可能因理想主义而失望。总结：一生在现实与乌托邦间摇摆，温柔却易碎。"
             },
-            {
-                question: "7. 心情不好的时候希望有人安慰自己 vs 喜欢一个人呆着",
-                dimension: "EI",
-                options: [
-                    { text: "心情不好的时候希望有人安慰自己", value: "E" },
-                    { text: "心情不好的时候喜欢一个人呆着", value: "I" }
-                ]
+            "ENFJ": {
+                "代号": "主人公 / 导师",
+                "优点": "领导魅力，善于鼓舞，人际敏感，推动成长",
+                "缺点": "过度干涉他人；讨好型人格，忽视自我；容易因批评受打击；对他人依赖性强",
+                "座右铭": "如果我能激励一个人，今天就没有白过。",
+                "最佳伴侣": "INFP、ISFP",
+                "适合岗位": "团队教练、公关经理、培训讲师、非营利组织负责人、职业顾问",
+                "受欢迎程度排名": "1",
+                "稀有度": "2.5%，排名第4",
+                "恋爱脑表现": "【中高】无私奉献、情感主导、过度投入",
+                "对应动物": "海豚",
+                "人生总结": "【激励与引领】早年：班级核心，乐于助人，渴望被需要。中年：成为教育家、政治家或团队领袖，塑造他人成长。晚年：被追随者铭记，但可能因过度付出而透支。总结：用热情点燃他人，但需警惕自我牺牲。"
             },
-            {
-                question: "8. 社交中高度热情 vs 社交中冷静应对",
-                dimension: "EI",
-                options: [
-                    { text: "社交中高度热情", value: "E" },
-                    { text: "社交中冷静应对", value: "I" }
-                ]
+            "ENFP": {
+                "代号": "竞选者 / 激发者",
+                "优点": "创意丰富，乐观积极，善于沟通，激励他人",
+                "缺点": "注意力分散，难以专注；情绪起伏大；容易半途而废；有时过于理想化",
+                "座右铭": "人生不是多选题，是全选！",
+                "最佳伴侣": "INFJ、INTJ",
+                "适合岗位": "创意总监、活动策划、旅游博主、用户体验设计师、儿童教育专家",
+                "受欢迎程度排名": "4",
+                "稀有度": "8.1%，排名第11",
+                "恋爱脑表现": "【高】热情似火、兴趣转移、理想主义",
+                "对应动物": "鹦鹉",
+                "人生总结": "【自由与可能性】早年：活力四射，兴趣广泛但难以坚持。中年：尝试多种职业，最终找到使命（如媒体、创意行业）。晚年：被赞为“永远年轻”，但可能因缺乏沉淀而遗憾。总结：一生追逐彩虹，但需落地才能触摸天空。"
             },
-            {
-                question: "9. 反应快，喜欢快节奏 vs 喜欢慢节奏，仔细考虑后再行动",
-                dimension: "EI",
-                options: [
-                    { text: "反应快，喜欢快节奏", value: "E" },
-                    { text: "喜欢慢节奏，仔细考虑后再行动", value: "I" }
-                ]
+            "ISTJ": {
+                "代号": "物流师 / 检查员",
+                "优点": "责任感强，做事有条理，注重细节，信守承诺",
+                "缺点": "固执守旧，抗拒变化；缺乏灵活性；过于注重规则；表达情感困难",
+                "座右铭": "事实就是事实，情绪请靠边。",
+                "最佳伴侣": "ESFP、ESTP",
+                "适合岗位": "审计师、军事后勤、质量控制经理、行政主管、法务专员",
+                "受欢迎程度排名": "15",
+                "稀有度": "11.6%，排名第14",
+                "恋爱脑表现": "【中】务实谨慎、行动胜于言语、固执传统",
+                "对应动物": "蚂蚁",
+                "人生总结": "【秩序与责任】早年：模范学生，遵守规则，厌恶变动。中年：成为可靠的中层管理者或专业人士。晚年：因稳定贡献受尊敬，但可能因保守错过机遇。总结：社会机器的螺丝钉，稳固但缺乏变通。"
             },
-            {
-                question: "10. 广度和深度，只能二选一的时候选广度 vs 选深度",
-                dimension: "EI",
-                options: [
-                    { text: "广度和深度，只能二选一的时候选广度", value: "E" },
-                    { text: "广度和深度，只能二选一的时候选深度", value: "I" }
-                ]
+            "ISFJ": {
+                "代号": "守卫者 / 保护者",
+                "优点": "体贴周到，记忆力出色，乐于助人，忠诚可靠",
+                "缺点": "过度牺牲自我；害怕冲突，回避对抗；容易焦虑，担忧未来；对新事物适应慢",
+                "座右铭": "照顾别人是我的本能，即使忘了自己。",
+                "最佳伴侣": "ESFP、ESTP",
+                "适合岗位": "护士/护理师、档案管理员、小学教师、客户服务经理、营养师",
+                "受欢迎程度排名": "7",
+                "稀有度": "13.8%，排名第16",
+                "恋爱脑表现": "【高】默默付出、过度迁就、安全感需求",
+                "对应动物": "大象",
+                "人生总结": "【奉献与守护】早年：乖巧懂事，照顾家人朋友。中年：在医疗、教育或服务行业默默付出。晚年：被亲人依赖，但可能因忽视自我而疲惫。总结：温暖的避风港，但需学会为自己而活。"
             },
-            {
-                question: "11. 别人的言行会促使我行动 vs 只有我自己有想法了，我才会行动",
-                dimension: "EI",
-                options: [
-                    { text: "别人的言行会促使我行动", value: "E" },
-                    { text: "只有我自己有想法了，我才会行动", value: "I" }
-                ]
+            "ESTJ": {
+                "代号": "总经理 / 监督者",
+                "优点": "组织力强，务实高效，执行力突出，维护秩序",
+                "缺点": "控制欲强，喜欢指挥；缺乏同理心；固执己见，不愿变通；对细节过度挑剔",
+                "座右铭": "要么做对，要么重做。",
+                "最佳伴侣": "ISTP、INTP",
+                "适合岗位": "项目经理、政府官员、财务总监、运营经理、警察/消防队长",
+                "受欢迎程度排名": "13",
+                "稀有度": "8.7%，排名第13",
+                "恋爱脑表现": "【中高】直球选手、掌控欲强、现实考量",
+                "对应动物": "蜜蜂",
+                "人生总结": "【效率与权威】早年：班长或社团领袖，崇尚纪律。中年：企业高管或政府官员，维护传统与规则。晚年：被视为“社会支柱”，但可能因固执而孤立。总结：现实的建筑师，但需包容变化。"
             },
-            {
-                question: "12. 参加聚会我很容易投入，一般都最后才离开 vs 经常感觉累，然后就想尽快回家",
-                dimension: "EI",
-                options: [
-                    { text: "参加聚会我很容易投入，一般都最后才离开", value: "E" },
-                    { text: "参加聚会我经常感觉累，然后就想尽快回家", value: "I" }
-                ]
+            "ESFJ": {
+                "代号": "执政官 / 供给者",
+                "优点": "关怀他人，协调能力强，注重和谐，乐于奉献",
+                "缺点": "过度在意他人评价；喜欢干涉他人生活；容易情绪化；传统观念过强",
+                "座右铭": "你的快乐，我的责任。",
+                "最佳伴侣": "ISFP、ISTP",
+                "适合岗位": "人力资源经理、婚礼策划师、销售经理、社区工作者、酒店管理人员",
+                "受欢迎程度排名": "9",
+                "稀有度": "12.3%，排名第15",
+                "恋爱脑表现": "【高】社交中心、情感主导、过度付出",
+                "对应动物": "孔雀",
+                "人生总结": "【和谐与奉献】早年：班级开心果，善于调解矛盾。中年：在服务行业发光发热，成为团队粘合剂。晚年：被家人朋友环绕，但可能因过度付出而忽略自我需求。总结：温暖的太阳，照亮他人却容易忘记自己。"
             },
-            {
-                question: "13. 被有很多人的聚会形式吸引，喜欢外出 vs 喜欢少数人的小型聚会，比如和朋友在家看电影",
-                dimension: "EI",
-                options: [
-                    { text: "被有很多人的聚会形式吸引，喜欢外出", value: "E" },
-                    { text: "喜欢少数人的小型聚会，比如和朋友在家看电影", value: "I" }
-                ]
+            "ISTP": {
+                "代号": "鉴赏家 / 巧匠",
+                "优点": "动手能力强，务实冷静，适应力出色，善于解决问题",
+                "缺点": "情感表达困难；容易厌倦重复性工作；缺乏规划；社交场合被动",
+                "座右铭": "先做再说，边做边改。",
+                "最佳伴侣": "ESFJ、ESTJ",
+                "适合岗位": "机械工程师、消防员、运动员、飞行员、手工艺人",
+                "受欢迎程度排名": "12",
+                "稀有度": "5%，排名第9",
+                "恋爱脑表现": "【低】行动表达、慢热务实、讨厌束缚",
+                "对应动物": "猎豹",
+                "人生总结": "【行动与实践】早年：调皮好动，喜欢拆解物品探究原理。中年：在技术领域成为专家，凭借冷静和动手能力解决复杂问题。晚年：享受简单生活，但可能因缺乏规划而留有遗憾。总结：用双手创造价值，行动胜于言语。"
             },
-            {
-                question: "14. 聚会中很健谈，和大多数人都能聊到一起 vs 聚会中比较安静，只和少数人能聊到一起",
-                dimension: "EI",
-                options: [
-                    { text: "聚会中很健谈，和大多数人都能聊到一起", value: "E" },
-                    { text: "聚会中比较安静，只和少数人能聊到一起", value: "I" }
-                ]
+            "ISFP": {
+                "代号": "探险家 / 艺术家",
+                "优点": "敏感细腻，富有同情心，崇尚自由，创造力强",
+                "缺点": "容易自卑；回避冲突；缺乏条理；过于理想化",
+                "座右铭": "用眼睛发现美好，用心灵感受世界。",
+                "最佳伴侣": "ESTJ、ENTJ",
+                "适合岗位": "摄影师、平面设计师、厨师、心理咨询师、护林员",
+                "受欢迎程度排名": "3",
+                "稀有度": "6.7%，排名第10",
+                "恋爱脑表现": "【高】浪漫敏感、被动等待、害怕受伤",
+                "对应动物": "鹿",
+                "人生总结": "【美与自由】早年：安静内向，喜欢沉浸在艺术或自然中。中年：通过艺术或服务他人表达内心世界。晚年：过着简单而有意义的生活，但可能因缺乏野心而错过机遇。总结：生活的诗人，用感知力和创造力点亮世界。"
             },
-            {
-                question: "15. 在各种场合都能主动快速地结交到新朋友 vs 一般通过被动和介绍的方式结交新朋友",
-                dimension: "EI",
-                options: [
-                    { text: "在各种场合都能主动快速地结交到新朋友", value: "E" },
-                    { text: "一般通过被动和介绍的方式结交新朋友", value: "I" }
-                ]
+            "ESTP": {
+                "代号": "企业家 / 实践者",
+                "优点": "适应力强，行动敏捷，现实感强，善于社交",
+                "缺点": "缺乏耐心；过于冲动；忽视长远规划；容易厌倦常规",
+                "座右铭": "活在当下，机会只留给行动派。",
+                "最佳伴侣": "ISFJ、ISTJ",
+                "适合岗位": "销售总监、企业家、消防员、体育教练、应急响应人员",
+                "受欢迎程度排名": "2",
+                "稀有度": "4.5%，排名第8",
+                "恋爱脑表现": "【中】直球表达、享受过程、不喜束缚",
+                "对应动物": "狼",
+                "人生总结": "【行动与冒险】早年：社交达人，喜欢挑战权威。中年：在商业或体育领域取得成功，凭借果断和适应力应对各种情况。晚年：成为活跃的退休人士，但可能因冲动而留有遗憾。总结：生活的冒险家，用行动探索世界。"
             },
-            {
-                question: "16. 希望有很多朋友，喜欢左右逢源的感觉 vs 有几个要好的朋友就够了",
-                dimension: "EI",
-                options: [
-                    { text: "希望有很多朋友，喜欢左右逢源的感觉", value: "E" },
-                    { text: "有几个要好的朋友就够了", value: "I" }
-                ]
-            },
-            {
-                question: "17. 好朋友经常让我安静一点 vs 好朋友经常让我嗨起来",
-                dimension: "EI",
-                options: [
-                    { text: "好朋友经常让我安静一点", value: "E" },
-                    { text: "好朋友经常让我嗨起来", value: "I" }
-                ]
-            },
-            
-            // S/N 维度问题 (18-31)
-            {
-                question: "18. 看重并遵从确定的已经被证明的想法 vs 看重灵感，喜欢创新",
-                dimension: "SN",
-                options: [
-                    { text: "看重并遵从确定的已经被证明的想法", value: "S" },
-                    { text: "看重灵感，喜欢创新", value: "N" }
-                ]
-            },
-            {
-                question: "19. 接收新想法时，实际意义和喜好中间选实际意义 vs 选喜好",
-                dimension: "SN",
-                options: [
-                    { text: "接收新想法时，实际意义和喜好中间选实际意义", value: "S" },
-                    { text: "接收新想法时，实际意义和喜好中间选喜好", value: "N" }
-                ]
-            },
-            {
-                question: "20. 更看重现实性和常识性 vs 更看重想象力和独创力",
-                dimension: "SN",
-                options: [
-                    { text: "更看重现实性和常识性", value: "S" },
-                    { text: "更看重想象力和独创力", value: "N" }
-                ]
-            },
-            {
-                question: "21. 喜欢练习和使用现有已知的技能 vs 喜欢尝试和挑战新技能",
-                dimension: "SN",
-                options: [
-                    { text: "喜欢练习和使用现有已知的技能", value: "S" },
-                    { text: "喜欢尝试和挑战新技能", value: "N" }
-                ]
-            },
-            {
-                question: "22. 留心具体的事物并喜欢细节描述 vs 留心象征故事，喜欢隐喻和类比",
-                dimension: "SN",
-                options: [
-                    { text: "留心具体的事物并喜欢细节描述", value: "S" },
-                    { text: "留心象征故事，喜欢隐喻和类比", value: "N" }
-                ]
-            },
-            {
-                question: "23. 着眼于现在的现实 vs 着眼于未来",
-                dimension: "SN",
-                options: [
-                    { text: "着眼于现在的现实", value: "S" },
-                    { text: "着眼于未来", value: "N" }
-                ]
-            },
-            {
-                question: "24. 循序渐进地描述事情 vs 以跳跃性的思维展现",
-                dimension: "SN",
-                options: [
-                    { text: "循序渐进地描述事情", value: "S" },
-                    { text: "以跳跃性的思维展现", value: "N" }
-                ]
-            },
-            {
-                question: "25. 买东西要先研究参数先试用，买水果要先试吃 vs 感觉到了就买，不需要这么麻烦",
-                dimension: "SN",
-                options: [
-                    { text: "买东西要先研究参数先试用，买水果要先试吃", value: "S" },
-                    { text: "感觉到了就买，不需要这么麻烦", value: "N" }
-                ]
-            },
-            {
-                question: "26. 通过观察细节得出结论 vs 相信自己的直觉",
-                dimension: "SN",
-                options: [
-                    { text: "通过观察细节得出结论", value: "S" },
-                    { text: "相信自己的直觉", value: "N" }
-                ]
-            },
-            {
-                question: "27. 喜欢聊实际的东西，比如电脑参数、包包款式 vs 喜欢聊未来和种种可能性，比如科技新发明",
-                dimension: "SN",
-                options: [
-                    { text: "喜欢聊实际的东西，比如电脑参数、包包款式", value: "S" },
-                    { text: "喜欢聊未来和种种可能性，比如科技新发明", value: "N" }
-                ]
-            },
-            {
-                question: "28. 了解一件事情先看具体细节 vs 了解一件事情先看大局面",
-                dimension: "SN",
-                options: [
-                    { text: "了解一件事情先看具体细节", value: "S" },
-                    { text: "了解一件事情先看大局面", value: "N" }
-                ]
-            },
-            {
-                question: "29. 选择活在确定的当下 vs 对未来充满想象",
-                dimension: "SN",
-                options: [
-                    { text: "选择活在确定的当下", value: "S" },
-                    { text: "对未来充满想象", value: "N" }
-                ]
-            },
-            {
-                question: "30. 现有的关系没有被破坏，就不用理它 vs 与人交往会去想未来的进步空间",
-                dimension: "SN",
-                options: [
-                    { text: "现有的关系没有被破坏，就不用理它", value: "S" },
-                    { text: "与人交往会去想未来的进步空间", value: "N" }
-                ]
-            },
-            {
-                question: "31. 约会前不想象，期待它自然发生 vs 在约会前会想很多可能发生的事情",
-                dimension: "SN",
-                options: [
-                    { text: "约会前不想象，期待它自然发生", value: "S" },
-                    { text: "在约会前会想很多可能发生的事情", value: "N" }
-                ]
-            },
-            
-            // T/F 维度问题 (32-45)
-            {
-                question: "32. 擅长对问题进行客观分析，实事求是 vs 擅长考虑行为对他人的影响",
-                dimension: "TF",
-                options: [
-                    { text: "擅长对问题进行客观分析，实事求是", value: "T" },
-                    { text: "擅长考虑行为对他人的影响", value: "F" }
-                ]
-            },
-            {
-                question: "33. 对所有人一视同仁，重视公平公正 vs 重视同情与和睦，必要时可以跳过规则以人为本",
-                dimension: "TF",
-                options: [
-                    { text: "对所有人一视同仁，重视公平公正", value: "T" },
-                    { text: "重视同情与和睦，必要时可以跳过规则以人为本", value: "F" }
-                ]
-            },
-            {
-                question: "34. 容易发现缺点 vs 容易理解别人，对缺点很包容",
-                dimension: "TF",
-                options: [
-                    { text: "容易发现缺点", value: "T" },
-                    { text: "容易理解别人，对缺点很包容", value: "F" }
-                ]
-            },
-            {
-                question: "35. 严格要求、一切必须按照标准来办 vs 注重感情、感情大于标准",
-                dimension: "TF",
-                options: [
-                    { text: "严格要求、一切必须按照标准来办", value: "T" },
-                    { text: "注重感情、感情大于标准", value: "F" }
-                ]
-            },
-            {
-                question: "36. 为人豪爽、直率、喜欢讲大实话 vs 讲话委婉、不愿意伤害别人",
-                dimension: "TF",
-                options: [
-                    { text: "为人豪爽、直率、喜欢讲大实话", value: "T" },
-                    { text: "讲话委婉、不愿意伤害别人", value: "F" }
-                ]
-            },
-            {
-                question: "37. 情感必须要符合逻辑 vs 关系大于一切，为了感情可以不顾逻辑",
-                dimension: "TF",
-                options: [
-                    { text: "情感必须要符合逻辑", value: "T" },
-                    { text: "关系大于一切，为了感情可以不顾逻辑", value: "F" }
-                ]
-            },
-            {
-                question: "38. 做事的动力是获得实实在在的好处 vs 做事的动力是获得某些人的认同和欣赏",
-                dimension: "TF",
-                options: [
-                    { text: "做事的动力是获得实实在在的好处", value: "T" },
-                    { text: "做事的动力是获得某些人的认同和欣赏", value: "F" }
-                ]
-            },
-            {
-                question: "39. 不赞同朋友意见时会直接说出来，对错分明 vs 不赞同朋友意见时会委婉暗示或回避",
-                dimension: "TF",
-                options: [
-                    { text: "不赞同朋友意见时会直接说出来，对错分明", value: "T" },
-                    { text: "不赞同朋友意见时会委婉暗示或回避", value: "F" }
-                ]
-            },
-            {
-                question: "40. 朋友对自己的评价多是逻辑清晰，目标明确 vs 朋友对自己的评价多是热情和细心",
-                dimension: "TF",
-                options: [
-                    { text: "朋友对自己的评价多是逻辑清晰，目标明确", value: "T" },
-                    { text: "朋友对自己的评价多是热情和细心", value: "F" }
-                ]
-            },
-            {
-                question: "41. 觉得社交要有明确的目标 vs 觉得社交开心和快乐最重要",
-                dimension: "TF",
-                options: [
-                    { text: "觉得社交要有明确的目标", value: "T" },
-                    { text: "觉得社交开心和快乐最重要", value: "F" }
-                ]
-            },
-            {
-                question: "42. 做决定的依据是逻辑能够讲得通 vs 做决定时先依心意再看逻辑",
-                dimension: "TF",
-                options: [
-                    { text: "做决定的依据是逻辑能够讲得通", value: "T" },
-                    { text: "做决定时先依心意再看逻辑", value: "F" }
-                ]
-            },
-            {
-                question: "43. 我更容易察觉到人们的言行是否符合逻辑 vs 我更容易察觉到人们情感波动及是否需要支持",
-                dimension: "TF",
-                options: [
-                    { text: "我更容易察觉到人们的言行是否符合逻辑", value: "T" },
-                    { text: "我更容易察觉到人们情感波动及是否需要支持", value: "F" }
-                ]
-            },
-            {
-                question: "44. 分手后一旦下定决心，会摆脱情绪很快走出来 vs 分手后容易深陷其中，很长一段时间才能走出来",
-                dimension: "TF",
-                options: [
-                    { text: "分手后一旦下定决心，会摆脱情绪很快走出来", value: "T" },
-                    { text: "分手后容易深陷其中，很长一段时间才能走出来", value: "F" }
-                ]
-            },
-            {
-                question: "45. 与人交往更看重客观和逻辑的交流 vs 与人交往更看重情感的交流",
-                dimension: "TF",
-                options: [
-                    { text: "与人交往更看重客观和逻辑的交流", value: "T" },
-                    { text: "与人交往更看重情感的交流", value: "F" }
-                ]
-            },
-            
-            // J/P 维度问题 (46-60)
-            {
-                question: "46. 做了决定以后会感到快乐 vs 为拥有很多选择而快乐",
-                dimension: "JP",
-                options: [
-                    { text: "做了决定以后会感到快乐", value: "J" },
-                    { text: "为拥有很多选择而快乐", value: "P" }
-                ]
-            },
-            {
-                question: "47. 有计划，先工作再玩 vs 随心所欲，先玩再工作",
-                dimension: "JP",
-                options: [
-                    { text: "有计划，先工作再玩", value: "J" },
-                    { text: "随心所欲，先玩再工作", value: "P" }
-                ]
-            },
-            {
-                question: "48. 喜欢定目标，然后准时坚定地完成 vs 随着新信息地获取，不断改变目标",
-                dimension: "JP",
-                options: [
-                    { text: "喜欢定目标，然后准时坚定地完成", value: "J" },
-                    { text: "随着新信息地获取，不断改变目标", value: "P" }
-                ]
-            },
-            {
-                question: "49. 希望提前知道即将要去的环境情况 vs 喜欢冒险，喜欢去未知的环境",
-                dimension: "JP",
-                options: [
-                    { text: "希望提前知道即将要去的环境情况", value: "J" },
-                    { text: "喜欢冒险，喜欢去未知的环境", value: "P" }
-                ]
-            },
-            {
-                question: "50. 看重结果，重点在于完成任务 vs 看重过程，如何去做比结果更重要",
-                dimension: "JP",
-                options: [
-                    { text: "看重结果，重点在于完成任务", value: "J" },
-                    { text: "看重过程，如何去做比结果更重要", value: "P" }
-                ]
-            },
-            {
-                question: "51. 定好时间就不更改，一定要在最后期限完成 vs 可以根据情况更改约定和最后期限",
-                dimension: "JP",
-                options: [
-                    { text: "定好时间就不更改，一定要在最后期限完成", value: "J" },
-                    { text: "可以根据情况更改约定和最后期限", value: "P" }
-                ]
-            },
-            {
-                question: "52. 满足感来源于完成计划 vs 满足感来源于计划的开始",
-                dimension: "JP",
-                options: [
-                    { text: "满足感来源于完成计划", value: "J" },
-                    { text: "满足感来源于计划的开始", value: "P" }
-                ]
-            },
-            {
-                question: "53. 接到旅行邀请先检查自己的时间表 vs 接到旅行邀请立即收拾行李准备出发",
-                dimension: "JP",
-                options: [
-                    { text: "接到旅行邀请先检查自己的时间表", value: "J" },
-                    { text: "接到旅行邀请立即收拾行李准备出发", value: "P" }
-                ]
-            },
-            {
-                question: "54. 严格控制时间，任何场合都不喜欢迟到 vs 不是非常重要的场合允许自己迟到",
-                dimension: "JP",
-                options: [
-                    { text: "严格控制时间，任何场合都不喜欢迟到", value: "J" },
-                    { text: "不是非常重要的场合允许自己迟到", value: "P" }
-                ]
-            },
-            {
-                question: "55. 约会前做好一切安排，包括去哪里吃什么穿什么 vs 喜欢随心所欲的约会，到了地方再选吃什么",
-                dimension: "JP",
-                options: [
-                    { text: "约会前做好一切安排，包括去哪里吃什么穿什么", value: "J" },
-                    { text: "喜欢随心所欲的约会，到了地方再选吃什么", value: "P" }
-                ]
-            },
-            {
-                question: "56. 希望自己的生活是有计划的 vs 希望自己的生活是弹性的、可随意更改的",
-                dimension: "JP",
-                options: [
-                    { text: "希望自己的生活是有计划的", value: "J" },
-                    { text: "希望自己的生活是弹性的、可随意更改的", value: "P" }
-                ]
-            },
-            {
-                question: "57. 我喜欢下定决心做一件事并能成功做到的人 vs 我喜欢随时都有多种选择方案并能随时改进的人",
-                dimension: "JP",
-                options: [
-                    { text: "我喜欢下定决心做一件事并能成功做到的人", value: "J" },
-                    { text: "我喜欢随时都有多种选择方案并能随时改进的人", value: "P" }
-                ]
-            },
-            {
-                question: "58. 我喜欢一个时间段只做一件事情 vs 我喜欢同时做多个事情",
-                dimension: "JP",
-                options: [
-                    { text: "我喜欢一个时间段只做一件事情", value: "J" },
-                    { text: "我喜欢同时做多个事情", value: "P" }
-                ]
+            "ESFP": {
+                "代号": "表演者 / 娱乐者",
+                "优点": "热情开朗，善于社交，富有同情心，适应力强",
+                "缺点": "过于依赖他人认可；缺乏深度思考；容易情绪化；难以坚持长期目标",
+                "座右铭": "人生苦短，及时行乐。",
+                "最佳伴侣": "ISTJ、ISFJ",
+                "适合岗位": "演员、公关、活动策划、销售、美容师",
+                "受欢迎程度排名": "14",
+                "稀有度": "8.5%，排名第12",
+                "恋爱脑表现": "【高】热情似火、情感主导、害怕孤独",
+                "对应动物": "猴子",
+                "人生总结": "【快乐与社交】早年：班级开心果，喜欢成为焦点。中年：在娱乐、销售或服务行业如鱼得水，擅长营造欢乐氛围。晚年：被家人朋友环绕，但可能因缺乏规划而晚年拮据。总结：生活的阳光，用热情和活力感染他人。"
             }
-        ];
-
-        // 性格类型描述
-        const typeDescriptions = {
-            "ISTJ": "ISTJ是安静、严肃、勤奋且可靠的性格类型。他们实际、务实、实事求是，对细节有出色的记忆力。他们重视传统和忠诚，喜欢有序、有组织的工作方式。",
-            "ISFJ": "ISFJ是安静、友好、负责任且认真的性格类型。他们致力于履行自己的职责，体贴、关心他人的感受。他们重视和谐与合作，喜欢有序、稳定的环境。",
-            "INFJ": "INFJ是寻求意义和联系的理想主义者。他们富有洞察力，能够理解复杂的模式和人际关系。他们专注于价值观和愿景，致力于帮助他人成长和发展。",
-            "INTJ": "INTJ是具有原创思维和强大动力的战略思想家。他们快速看到模式和可能性，专注于实施他们的愿景。他们独立、批判性思考，对自己和他人的能力要求很高。",
-            "ISTP": "ISTP是灵活、宽容的观察者，直到问题出现才会采取行动。他们分析问题的工作原理，擅长找到解决方案。他们感兴趣于原因和结果，喜欢机械和工具。",
-            "ISFP": "ISFP是安静、友好、敏感且善良的性格类型。他们享受当下，喜欢有自己的空间和灵活的时间表。他们忠于自己的价值观和重要的人，不喜欢争论和冲突。",
-            "INFP": "INFP是理想主义者，忠于自己的价值观和重要的人。他们希望外部生活与自己的价值观一致，充满好奇心，快速看到可能性。他们寻求理解他人并帮助实现潜力。",
-            "INTP": "INTP是寻求发展对所有感兴趣事物的合理解释的创新思想家。他们有逻辑性和创造性，可能是所有类型中最独立的。他们重视专业知识，喜欢理论和抽象思维。",
-            "ESTP": "ESTP是灵活、宽容的现实主义者，专注于快速找到实际解决方案。他们活跃、精力充沛，享受物质舒适和风格。他们喜欢与他人一起做事，使事情发生。",
-            "ESFP": "ESFP是外向、友好、接受力强的性格类型。他们热爱生活、人和物质舒适。他们喜欢与他人一起工作，使事情有趣，通过常识和现实方法完成任务。",
-            "ENFP": "ENFP是热情、富有想象力、自发的性格类型。他们几乎可以做任何引起他们兴趣的事情。他们寻求并欣赏他人的认可，随时准备给予赞赏和支持。",
-            "ENTP": "ENTP是快速、聪明、激励性强的性格类型。他们在解决具有挑战性的问题时足智多谋。他们善于概念化，然后继续下一个有趣的想法。",
-            "ESTJ": "ESTJ是实际、现实、果断的性格类型。他们快速决定需要做什么并组织起来完成。他们喜欢组织活动和项目，关注细节，遵循逻辑标准。",
-            "ESFJ": "ESFJ是热心、合作、和谐的性格类型。他们喜欢与他人一起准确、准时地完成任务。他们忠诚，关注他人的感受，重视稳定和安全。",
-            "ENFJ": "ENFJ是热情、善解人意、负责任的性格类型。他们高度关注他人的情绪、需求和动机。他们帮助他人发展潜力，可能成为个人或团体成长的催化剂。",
-            "ENTJ": "ENTJ是坦率、果断、承担领导角色的性格类型。他们快速看到低效和程序，制定和实施全面的系统来解决组织问题。他们喜欢长期规划和目标设定。"
         };
 
-        // 当前问题索引
-        let currentQuestionIndex = 0;
-        // 用户答案
-        const userAnswers = {
-            EI: { E: 0, I: 0 },
-            SN: { S: 0, N: 0 },
-            TF: { T: 0, F: 0 },
-            JP: { J: 0, P: 0 }
-        };
-
-        // 初始化测试
-        function initTest() {
-            renderQuestion();
-            updateProgress();
-        }
-
-        // 渲染当前问题
-        function renderQuestion() {
-            const testContainer = document.getElementById("testContainer");
-            const question = questions[currentQuestionIndex];
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            const mbtiSelect = document.getElementById('mbtiSelect');
+            const resultTable = document.getElementById('resultTable');
+            const loadingIndicator = document.getElementById('loadingIndicator');
             
-            testContainer.innerHTML = `
-                <div class="question-container active">
-                    <div class="signature">@点亮心灵Miss徐</div>
-                    <div class="question">${question.question}</div>
-                    <div class="options">
-                        ${question.options.map((option, index) => `
-                            <label class="option" data-value="${option.value}">
-                                <input type="radio" name="answer" value="${option.value}" style="display: none;">
-                                <span class="checkmark"></span>
-                                <span class="option-text">${option.text}</span>
-                            </label>
-                        `).join("")}
-                    </div>
-                    <div class="navigation">
-                        <button id="prevBtn" ${currentQuestionIndex === 0 ? "disabled" : ""}>上一题</button>
-                        <button id="nextBtn" ${currentQuestionIndex === questions.length - 1 ? "" : "disabled"}>${currentQuestionIndex === questions.length - 1 ? "查看结果" : "下一题"}</button>
-                    </div>
-                </div>
-            `;
+            // 尝试从本地存储获取上次选择
+            const lastSelected = localStorage.getItem('lastSelectedMBTI');
+            if (lastSelected && mbtiData[lastSelected]) {
+                mbtiSelect.value = lastSelected;
+                displayMBTIDetails(lastSelected);
+            }
             
-            // 添加事件监听器
-            document.querySelectorAll(".option").forEach(option => {
-                option.addEventListener("click", function() {
-                    document.querySelectorAll(".option").forEach(opt => opt.classList.remove("selected"));
-                    this.classList.add("selected");
-                    document.getElementById("nextBtn").disabled = false;
-                });
+            // 添加事件监听器处理选择变化
+            mbtiSelect.addEventListener('change', function() {
+                const selectedType = this.value;
+                if (selectedType && mbtiData[selectedType]) {
+                    showLoading();
+                    
+                    // 模拟网络延迟，实际使用时可以去掉
+                    setTimeout(() => {
+                        displayMBTIDetails(selectedType);
+                        hideLoading();
+                        
+                        // 保存选择到本地存储
+                        localStorage.setItem('lastSelectedMBTI', selectedType);
+                    }, 300);
+                }
             });
             
-            document.getElementById("prevBtn").addEventListener("click", goToPreviousQuestion);
-            document.getElementById("nextBtn").addEventListener("click", goToNextQuestion);
-        }
-
-        // 更新进度条
-		function updateProgress() {
-			const progress = ((currentQuestionIndex + 1) / questions.length) * 100;
-			document.getElementById("progressBar").style.width = `${progress}%`;
-			document.getElementById("progressText").textContent = `${currentQuestionIndex + 1}/${questions.length}`;
-		}
-
-        // 前往下一题
-        function goToNextQuestion() {
-            const selectedOption = document.querySelector(".option.selected");
-            if (!selectedOption && currentQuestionIndex !== questions.length - 1) return;
-            
-            if (selectedOption) {
-                const value = selectedOption.getAttribute("data-value");
-                const dimension = questions[currentQuestionIndex].dimension;
-                userAnswers[dimension][value]++;
+            // 如果URL中有类型参数，自动加载
+            const urlParams = new URLSearchParams(window.location.search);
+            const typeParam = urlParams.get('type');
+            if (typeParam && mbtiData[typeParam.toUpperCase()]) {
+                mbtiSelect.value = typeParam.toUpperCase();
+                displayMBTIDetails(typeParam.toUpperCase());
             }
+        });
+
+        // 显示加载指示器
+        function showLoading() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const resultTable = document.getElementById('resultTable');
             
-            if (currentQuestionIndex < questions.length - 1) {
-                currentQuestionIndex++;
-                renderQuestion();
-                updateProgress();
-            } else {
-                showResult();
-            }
+            resultTable.innerHTML = '';
+            loadingIndicator.style.display = 'block';
+        }
+        
+        // 隐藏加载指示器
+        function hideLoading() {
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'none';
         }
 
-        // 前往上一题
-        function goToPreviousQuestion() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                renderQuestion();
-                updateProgress();
-            }
+        // 显示MBTI类型详情
+        function displayMBTIDetails(type) {
+            const data = mbtiData[type];
+            const table = document.getElementById('resultTable');
+            
+            // 清空表格
+            table.innerHTML = '';
+            
+            // 添加表格内容
+            const rows = [
+                ['MBTI类型', `<span class="characteristic">${type} - ${data.代号}</span>`],
+                ['性格优点', data.优点],
+                ['性格缺点', data.缺点],
+                ['人生座右铭', `<span class="characteristic">"${data.座右铭}"</span>`],
+                ['最佳伴侣', data.最佳伴侣],
+                ['适合岗位', data.适合岗位],
+                ['受欢迎程度排名', data.受欢迎程度排名],
+                ['稀有度', data.稀有度],
+                ['恋爱脑表现', data.恋爱脑表现],
+                ['对应动物', `${data.对应动物} <span class="animal-icon">${getAnimalIcon(data.对应动物)}</span>`],
+                ['人生总结', `<div class="life-summary">${data.人生总结}</div>`]
+            ];
+            
+            // 生成表格行
+            rows.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <th>${row[0]}</th>
+                    <td>${row[1]}</td>
+                `;
+                table.appendChild(tr);
+            });
+            
+            // 更新URL但不刷新页面
+            history.pushState(null, null, `?type=${type}`);
         }
 
-        // 显示结果
-        function showResult() {
-            // 计算每个维度的得分
-            const eiScore = userAnswers.EI.E - userAnswers.EI.I;
-            const snScore = userAnswers.SN.S - userAnswers.SN.N;
-            const tfScore = userAnswers.TF.T - userAnswers.TF.F;
-            const jpScore = userAnswers.JP.J - userAnswers.JP.P;
-            
-            // 确定性格类型
-            const type = [
-                eiScore >= 0 ? "E" : "I",
-                snScore >= 0 ? "S" : "N",
-                tfScore >= 0 ? "T" : "F",
-                jpScore >= 0 ? "J" : "P"
-            ].join("");
-            
-            // 显示结果
-            document.getElementById("testContainer").style.display = "none";
-            document.getElementById("resultContainer").style.display = "block";
-            document.getElementById("resultType").textContent = type;
-            document.getElementById("typeDescription").innerHTML = `<p>${typeDescriptions[type] || "暂无该性格类型的详细描述。"}</p>`;
-            
-            // 更新维度条和数量显示
-            updateDimensionBar("EI", eiScore, userAnswers.EI.E, userAnswers.EI.I);
-            updateDimensionBar("SN", snScore, userAnswers.SN.S, userAnswers.SN.N);
-            updateDimensionBar("TF", tfScore, userAnswers.TF.T, userAnswers.TF.F);
-            updateDimensionBar("JP", jpScore, userAnswers.JP.J, userAnswers.JP.P);
-            
-            // 添加重新测试按钮事件
-            document.getElementById("restartBtn").addEventListener("click", restartTest);
+        // 根据动物名称获取对应的emoji图标
+        function getAnimalIcon(animal) {
+            const icons = {
+                "猫头鹰": "🦉",
+                "章鱼": "🐙",
+                "狮子": "🦁",
+                "狐狸": "🦊",
+                "狼": "🐺",
+                "鹿": "🦌",
+                "海豚": "🐬",
+                "鹦鹉": "🦜",
+                "蚂蚁": "🐜",
+                "大象": "🐘",
+                "蜜蜂": "🐝",
+                "孔雀": "🦚",
+                "猎豹": "🐆",
+                "猴子": "🐵"
+            };
+            return icons[animal] || "";
         }
-
-        // 更新维度条和数量显示
-        function updateDimensionBar(dimension, score, count1, count2) {
-            const maxScore = dimension === "EI" ? 17 : dimension === "SN" ? 14 : dimension === "TF" ? 14 : 15;
-            const percentage = ((score + maxScore) / (maxScore * 2)) * 100;
-            document.getElementById(`fill${dimension}`).style.width = `${percentage}%`;
-            
-            // 更新数量显示
-            const labels = {EI: ["E", "I"], SN: ["S", "N"], TF: ["T", "F"], JP: ["J", "P"]};
-            document.getElementById(`count${dimension}`).textContent = 
-                `(${labels[dimension][0]}: ${count1}, ${labels[dimension][1]}: ${count2})`;
-        }
-
-		// 重新开始测试
-        function restartTest() {
-            // 重置数据
-            currentQuestionIndex = 0;
-            for (const dim in userAnswers) {
-                for (const key in userAnswers[dim]) {
-                    userAnswers[dim][key] = 0;
-                }
-            }
-            
-            // 重置UI
-            document.getElementById("testContainer").style.display = "block";
-            document.getElementById("resultContainer").style.display = "none";
-            
-            // 重新初始化
-            renderQuestion();
-            updateProgress();
-        }
-
-        // 初始化测试
-        window.onload = initTest;
     </script>
 </body>
 </html>

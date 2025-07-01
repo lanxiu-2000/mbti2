@@ -133,7 +133,7 @@
     <div class="container">
         <h1>心理测试系统</h1>
         
-        <div id="loading" class="loading">请选择本地JSON3数据文件...</div>
+        <div id="loading" class="loading">请选择本地JSON数据文件...</div>
         
         <div id="app-content" class="hidden">
             <!-- 移动设备专用文件输入 -->
@@ -207,44 +207,44 @@
     <script>
         // 数据容器
         const data = {
-            pearl: {},
-            usa: {},
-            life: {},
-            family: {},
-            zhihuyou: {},
-            leftHand: {},
-            hiddenTalent: {},
-            animal: {},
-            mbti: {},
-            loveFidelity: {},
-            pillow: {},
-            monkey: {},
-            lookHand: {},
-            loveFortune: {},
-            fearRoad: {},
-            glassHeart: {},
-            wenQuan: {},
-            chengFu: {},
-            lianaiNao: {},
-            shiHe: {},
-            buHe: {},
-            heartAge: {},
-            sexQuxiang1: {},
-            lingHun: {},
-            chuGui: {},
-            tongNian: {},
-            shuangRen: {},
-            tianSheng: {},
-            xingQuxiang: {},
-            jiaRen: {},
-            fiveStar: {},
-            tongYi: {},
-            liHun: {},
-            afraidMarriage: {},
-            otherHalf: {},
-            virtualDream: {},
-            virtualIndex: {},
-            hbdi: {}
+			pearl: {},
+			usa: {},
+			life: {},
+			family: {},
+			zhihuyou: {},
+			left_hand: {},
+			hidden_talent: {},
+			animal: {},
+			mbti: {},
+			love_fidelity: {},
+			pillow: {},
+			monkey: {},
+			look_hand: {},
+			love_fortune: {},
+			fear_road: {},
+			glass_heart: {},
+			wen_quan: {},
+			cheng_fu: {},
+			lianai_nao: {},
+			shi_he: {},
+			bu_he: {},
+			heart_age: {},
+			sex_quxiang1: {},
+			ling_hun: {},
+			chu_gui: {},
+			tong_nian: {},
+			shuang_ren: {},
+			tian_sheng: {},
+			xing_quxiang: {},
+			jia_ren: {},
+			five_star: {},
+			tong_yi: {},
+			li_hun: {},
+			afraid_marriage: {},
+			other_half: {},
+			virtual_dream: {},
+			virtual_index: {},
+			hbdi: {}
         };
 
         // 预设数据
@@ -321,61 +321,56 @@
         }
 		
         // 加载数据
-        async function loadData() {
-            try {
-                document.getElementById('loading').style.display = 'block';
-                document.getElementById('app-content').style.display = 'none';
-                
-                // 检查是否有本地存储的数据
-                const savedData = localStorage.getItem('psychologyData');
-                if (savedData) {
-                    try {
-                        const jsonData = JSON.parse(savedData);
-                        Object.assign(data, jsonData);
-                        console.log('从本地存储加载数据成功');
-                        
-                        // 隐藏加载状态，显示应用内容
-                        document.getElementById('loading').style.display = 'none';
-                        document.getElementById('app-content').style.display = 'block';
-                        
-                        initApp(); // 初始化应用
-                    } catch (error) {
-                        console.error('解析本地数据失败:', error);
-                        document.getElementById('loading').textContent = '本地数据损坏，请重新上传JSON文件';
-                    }
-                } else {
-                    console.log('没有找到本地存储的数据，等待用户上传');
-                    document.getElementById('loading').textContent = '请选择本地JSON数据文件';
-                }
-            } catch (error) {
-                console.error('加载数据失败:', error);
-                document.getElementById('loading').innerHTML = 
-                    '加载数据失败，请检查文件格式或重新上传。<br>' +
-                    '错误信息: ' + error.message;
-            }
-        }
-		
-        // 处理文件选择
+		async function loadData() {
+			try {
+				document.getElementById('loading').style.display = 'block';
+				document.getElementById('app-content').style.display = 'none';
+
+				const savedData = localStorage.getItem('psychologyData');
+				if (savedData) {
+					try {
+						Object.assign(data, JSON.parse(savedData));
+						console.log('从本地存储加载数据成功');
+					} catch (error) {
+						console.error('解析本地数据失败:', error);
+						document.getElementById('loading').textContent = '本地数据损坏，请重新上传JSON文件';
+						return; // 数据损坏时停止后续操作
+					}
+				}
+
+				// 确保UI更新完成后再初始化
+				setTimeout(() => {
+					document.getElementById('loading').style.display = 'none';
+					document.getElementById('app-content').style.display = 'block';
+					initApp();
+				}, 100);
+			} catch (error) {
+				console.error('加载数据失败:', error);
+				document.getElementById('loading').innerHTML = '加载数据失败，请检查文件格式或重新上传。<br>错误信息: ' + error.message;
+			}
+		}
+
+		// 在handleFileSelect函数中添加更多的错误日志
 		async function handleFileSelect(event) {
 			const file = event.target.files[0];
 			if (!file) return;
-			
+
 			try {
 				document.getElementById('loading').style.display = 'block';
 				document.getElementById('loading').textContent = '正在加载数据，请稍候...';
-				
+
 				const jsonData = await loadDataFromFile(file);
 				Object.assign(data, jsonData);
-				
+
 				// 保存到本地存储
 				localStorage.setItem('psychologyData', JSON.stringify(data));
-				
+
 				// 隐藏加载状态，显示应用内容
 				document.getElementById('loading').style.display = 'none';
 				document.getElementById('app-content').style.display = 'block';
-				
+
 				initApp(); // 重新初始化应用
-				
+
 				// 重置文件输入，允许选择同一个文件再次上传
 				event.target.value = '';
 			} catch (error) {
@@ -389,6 +384,9 @@
         // 初始化应用
 		function initApp() {
 			// 设置事件监听器
+			testTypeSelect.removeEventListener('change', onTestChange);
+			optionSelect.removeEventListener('change', onOptionChange);
+			
 			testTypeSelect.addEventListener('change', onTestChange);
 			optionSelect.addEventListener('change', onOptionChange);
 			analyzeBtn.addEventListener('click', analyzeInput);
@@ -397,10 +395,16 @@
 			
 			// 文件选择按钮点击事件
 			document.getElementById('loadFileBtn').addEventListener('click', function() {
-				// 根据设备类型触发不同的文件输入
+				console.log('点击了选择文件按钮');
+				console.log('窗口宽度:', window.innerWidth);
+				console.log('移动端文件输入:', document.getElementById('mobileFileInput'));
+				console.log('桌面端文件输入:', document.getElementById('fileInput'));
+				
 				if (window.innerWidth <= 768) {
+					console.log('触发移动端文件选择');
 					document.getElementById('mobileFileInput').click();
 				} else {
+					console.log('触发桌面端文件选择');
 					document.getElementById('fileInput').click();
 				}
 			});
@@ -425,301 +429,303 @@
         }
 
         // 更新选项菜单
-        function updateOptionMenu() {
-            let options = [];
-            
-            switch(currentTestType) {
-                case 'pearl':
-                    options = ["1", "2", "3", "4", "5", "6"];
-                    currentAnswers = data.pearl;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'usa':
-                    options = ["U/U", "U/U女", "U/U男", "U/SA", "U/SA女", "U/SA男",
-                              "SA/U", "SA/U女", "SA/U男", "SA/SA", "SA/SA女", "SA/SA男"];
-                    currentAnswers = data.usa;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'life':
-                    // 合并预设选项和已保存的自定义选项
-                    const allLifeOptions = [...new Set([...lifePresets, ...Object.keys(data.life)])];
-                    options = allLifeOptions.sort((a, b) => a.localeCompare(b));
-                    
-                    // 创建当前答案字典
-                    currentAnswers = {};
-                    for (const opt of options) {
-                        currentAnswers[opt] = data.life[opt] || `人生主角测试结果: ${opt}\n\n(这是预设选项，您可以编辑此解释)`;
-                    }
-                    
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeLifeInput;
-                    break;
-                    
-                case 'family':
-                    options = Object.keys(data.family);
-                    currentAnswers = data.family;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeFamilyInput;
-                    break;
-                    
-                case 'zhihuyou':
-                    options = Object.keys(data.zhihuyou);
-                    currentAnswers = data.zhihuyou;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeZhihuyouInput;
-                    break;
-                    
-                case 'leftHand':
-                    options = ["1", "2", "3", "4", "5"];
-                    currentAnswers = data.leftHand;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'hiddenTalent':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.hiddenTalent;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'threeAnimals':
-                    options = Object.keys(data.animal);
-                    currentAnswers = data.animal;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeAnimalInput;
-                    break;
-                    
-                case 'mbti':
-                    options = [
-                        "INTJ", "INTP", "ENTJ", "ENTP",
-                        "INFJ", "INFP", "ENFJ", "ENFP",
-                        "ISTJ", "ISFJ", "ESTJ", "ESFJ",
-                        "ISTP", "ISFP", "ESTP", "ESFP"
-                    ];
-                    currentAnswers = data.mbti;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'loveIndex':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.loveFidelity;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'pillow':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.pillow;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'monkey':
-                    options = ["1", "2", "3", "4", "5"];
-                    currentAnswers = data.monkey;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'lookHand':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.lookHand;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'loveFortune':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.loveFortune;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'fearRoad':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.fearRoad;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'glassHeart':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.glassHeart;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'hotSpring':
-                    options = ["1. 红色", "2. 橘色", "3. 黄色", "4. 浅绿色", "5. 深绿色", 
-                              "6. 粉红色", "7. 浅蓝色", "8. 紫色", "9. 深蓝色", "10. 不泡温泉反骨仔"];
-                    currentAnswers = data.wenQuan;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'scheming':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.chengFu;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'loveBrain':
-                    options = ["A", "B", "C", "D"];
-                    currentAnswers = data.lianaiNao;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'suitableType':
-                    options = ["A", "B", "C", "D"];
-                    currentAnswers = data.shiHe;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'bornIncompatible':
-                    options = ["A", "B", "C", "D"];
-                    currentAnswers = data.buHe;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'mentalAge':
-                    options = ["A", "B", "C", "D"];
-                    currentAnswers = data.heartAge;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'sexualOrientation1':
-                    options = ["A", "B", "C", "D"];
-                    currentAnswers = data.sexQuxiang1;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'soulGender':
-                    options = ["A", "B", "C", "D", "E"];
-                    currentAnswers = data.lingHun;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'cheatingTendency':
-                    options = ["A", "B", "C", "D"];
-                    currentAnswers = data.chuGui;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'childhoodTrauma':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.tongNian;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'coupleTest':
-                    options = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
-                    currentAnswers = data.shuangRen;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'bornIncompatible2':
-                    options = ["10分-18分", "19分-26分", "27分-34分", "35分-40分"];
-                    currentAnswers = data.tianSheng;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'sexualOrientation':
-                    options = ["低于 17 分", "27 - 34 分", "超过 35 分"];
-                    currentAnswers = data.xingQuxiang;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'marry':
-                    options = ["A", "B", "C", "D", "E"];
-                    currentAnswers = data.jiaRen;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'fiveStar':
-                    options = ["1", "2", "3", "4", "5"];
-                    currentAnswers = data.fiveStar;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'sameOppositeSex':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.tongYi;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'divorceRate':
-                    options = ["1", "2", "3", "4"];
-                    currentAnswers = data.liHun;
-                    inputGroup.classList.add('hidden');
-                    break;
-                    
-                case 'afraidMarriage':
-                    options = Object.keys(data.afraidMarriage);
-                    currentAnswers = data.afraidMarriage;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeAfraidMarriageInput;
-                    break;
-                    
-                case 'otherHalf':
-                    options = Object.keys(data.otherHalf);
-                    currentAnswers = data.otherHalf;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeOtherHalfInput;
-                    break;
-                    
-                case 'virtualDream':
-                    options = Object.keys(data.virtualDream);
-                    currentAnswers = data.virtualDream;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeVirtualDreamInput;
-                    break;
-                    
-                case 'virtualIndex':
-                    options = Object.keys(data.virtualIndex);
-                    currentAnswers = data.virtualIndex;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeVirtualIndexInput;
-                    break;
-                    
-                case 'hbdi':
-                    options = Object.keys(data.hbdi);
-                    currentAnswers = data.hbdi;
-                    inputGroup.classList.remove('hidden');
-                    analyzeBtn.textContent = "分析";
-                    analyzeBtn.onclick = analyzeHBDIInput;
-                    break;
-            }
-            
-            // 更新选项菜单
-            optionSelect.innerHTML = '';
-            options.forEach(option => {
-                const optionElement = document.createElement('option');
-                optionElement.value = option;
-                optionElement.textContent = option;
-                optionSelect.appendChild(optionElement);
-            });
-            
-            // 显示第一个选项的答案
-            if (options.length > 0) {
-                optionSelect.value = options[0];
-                showAnswer();
-            } else {
-                answerText.value = '';
-            }
-        }
+		function updateOptionMenu() {
+			let options = [];
+			
+			switch(currentTestType) {
+				case 'pearl':
+					options = ["1", "2", "3", "4", "5", "6"];
+					currentAnswers = data.pearl || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'usa':
+					options = ["U/U", "U/U女", "U/U男", "U/SA", "U/SA女", "U/SA男",
+							  "SA/U", "SA/U女", "SA/U男", "SA/SA", "SA/SA女", "SA/SA男"];
+					currentAnswers = data.usa || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'life':
+					// 合并预设选项和已保存的自定义选项
+					const allLifeOptions = [...new Set([...lifePresets, ...Object.keys(data.life)])];
+					options = allLifeOptions.sort((a, b) => a.localeCompare(b));
+					
+					// 创建当前答案字典
+					currentAnswers = {};
+					for (const opt of options) {
+						currentAnswers[opt] = data.life[opt] || `人生主角测试结果: ${opt}\n\n(这是预设选项，您可以编辑此解释)`;
+					}
+					
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeLifeInput;
+					break;
+					
+				case 'family':
+					options = Object.keys(data.family);
+					currentAnswers = data.family || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeFamilyInput;
+					break;
+					
+				case 'zhihuyou':
+					options = Object.keys(data.zhihuyou);
+					currentAnswers = data.zhihuyou || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeZhihuyouInput;
+					break;
+					
+				case 'leftHand':
+					options = ["1", "2", "3", "4", "5"];
+					currentAnswers = data.left_hand || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'hiddenTalent':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.hidden_talent || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'threeAnimals':
+					options = Object.keys(data.animal);
+					currentAnswers = data.animal || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeAnimalInput;
+					break;
+					
+				case 'mbti':
+					options = [
+						"INTJ", "INTP", "ENTJ", "ENTP",
+						"INFJ", "INFP", "ENFJ", "ENFP",
+						"ISTJ", "ISFJ", "ESTJ", "ESFJ",
+						"ISTP", "ISFP", "ESTP", "ESFP"
+					];
+					currentAnswers = data.mbti || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'loveIndex':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.love_fidelity || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'pillow':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.pillow || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'monkey':
+					options = ["1", "2", "3", "4", "5"];
+					currentAnswers = data.monkey || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'lookHand':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.look_hand || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'loveFortune':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.love_fortune || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'fearRoad':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.fear_road || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'glassHeart':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.glass_heart || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'hotSpring':
+					options = ["1. 红色", "2. 橘色", "3. 黄色", "4. 浅绿色", "5. 深绿色", 
+							  "6. 粉红色", "7. 浅蓝色", "8. 紫色", "9. 深蓝色", "10. 不泡温泉反骨仔"];
+					currentAnswers = data.wen_quan || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'scheming':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.cheng_fu || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'loveBrain':
+					options = ["A", "B", "C", "D"];
+					currentAnswers = data.lianai_nao || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'suitableType':
+					options = ["A", "B", "C", "D"];
+					currentAnswers = data.shi_he || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'bornIncompatible':
+					options = ["A", "B", "C", "D"];
+					currentAnswers = data.bu_he || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'mentalAge':
+					options = ["A", "B", "C", "D"];
+					currentAnswers = data.heart_age || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'sexualOrientation1':
+					options = ["A", "B", "C", "D"];
+					currentAnswers = data.sex_quxiang1 || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'soulGender':
+					options = ["A", "B", "C", "D", "E"];
+					currentAnswers = data.ling_hun || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'cheatingTendency':
+					options = ["A", "B", "C", "D"];
+					currentAnswers = data.chu_gui || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'childhoodTrauma':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.tong_nian || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'coupleTest':
+					options = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
+					currentAnswers = data.shuang_ren || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'bornIncompatible2':
+					options = ["10分-18分", "19分-26分", "27分-34分", "35分-40分"];
+					currentAnswers = data.tian_sheng || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'sexualOrientation':
+					options = ["低于 17 分", "27 - 34 分", "超过 35 分"];
+					currentAnswers = data.xing_quxiang || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'marry':
+					options = ["A", "B", "C", "D", "E"];
+					currentAnswers = data.jia_ren || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'fiveStar':
+					options = ["1", "2", "3", "4", "5"];
+					currentAnswers = data.five_star || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'sameOppositeSex':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.tong_yi || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'divorceRate':
+					options = ["1", "2", "3", "4"];
+					currentAnswers = data.li_hun || {};
+					inputGroup.classList.add('hidden');
+					break;
+					
+				case 'afraidMarriage':
+					options = Object.keys(data.afraid_marriage);
+					currentAnswers = data.afraid_marriage || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeAfraidMarriageInput;
+					break;
+					
+				case 'otherHalf':
+					options = Object.keys(data.other_half);
+					currentAnswers = data.other_half || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeOtherHalfInput;
+					break;
+					
+				case 'virtualDream':
+					options = Object.keys(data.virtual_dream);
+					currentAnswers = data.virtual_dream || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeVirtualDreamInput;
+					break;
+					
+				case 'virtualIndex':
+					options = Object.keys(data.virtual_index);
+					currentAnswers = data.virtual_index || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeVirtualIndexInput;
+					break;
+					
+				case 'hbdi':
+					options = Object.keys(data.hbdi);
+					currentAnswers = data.hbdi || {};
+					inputGroup.classList.remove('hidden');
+					analyzeBtn.textContent = "分析";
+					analyzeBtn.onclick = analyzeHBDIInput;
+					break;
+			}
+			
+			// 更新选项菜单
+			optionSelect.innerHTML = '';
+			options.forEach(option => {
+				const optionElement = document.createElement('option');
+				optionElement.value = option;
+				optionElement.textContent = option;
+				optionSelect.appendChild(optionElement);
+			});
+			
+			// 显示第一个选项的答案
+			if (options.length > 0) {
+				optionSelect.value = options[0];
+				showAnswer();
+			} else {
+				answerText.value = '';
+			}
+		}
 
         // 显示当前选项的答案
-        function showAnswer() {
-            const selectedOption = optionSelect.value;
-            const answer = currentAnswers[selectedOption] || '';
-            answerText.value = answer;
-            
-            // 自动复制到剪贴板
-            navigator.clipboard.writeText(answer).catch(err => {
-                console.error('无法复制到剪贴板:', err);
-            });
-        }
+		function showAnswer() {
+			try {
+				const selectedOption = optionSelect.value;
+				if (!selectedOption) return;
+				
+				const answer = currentAnswers[selectedOption] || '暂无答案，请先分析或编辑';
+				answerText.value = answer;
+			} catch (error) {
+				console.error('显示答案时出错:', error);
+				answerText.value = '显示答案时出错: ' + error.message;
+			}
+		}
 
         // 分析输入
         function analyzeInput() {
@@ -1433,45 +1439,132 @@
         }
 
         // 编辑当前答案
-        function editAnswer() {
-            const selectedOption = optionSelect.value;
-            const newAnswer = answerText.value.trim();
-            currentAnswers[selectedOption] = newAnswer;
-            
-            // 更新对应的数据容器
-            switch(currentTestType) {
-                case 'life':
-                    data.life[selectedOption] = newAnswer;
-                    break;
-                case 'family':
-                    data.family[selectedOption] = newAnswer;
-                    break;
-                case 'zhihuyou':
-                    data.zhihuyou[selectedOption] = newAnswer;
-                    break;
-                case 'threeAnimals':
-                    data.animal[selectedOption] = newAnswer;
-                    break;
-                case 'afraidMarriage':
-                    data.afraidMarriage[selectedOption] = newAnswer;
-                    break;
-                case 'otherHalf':
-                    data.otherHalf[selectedOption] = newAnswer;
-                    break;
-                case 'virtualDream':
-                    data.virtualDream[selectedOption] = newAnswer;
-                    break;
-                case 'virtualIndex':
-                    data.virtualIndex[selectedOption] = newAnswer;
-                    break;
-                case 'hbdi':
-                    data.hbdi[selectedOption] = newAnswer;
-                    break;
-            }
-            
-            saveData();
-            alert("答案已保存。");
-        }
+		function editAnswer() {
+			const selectedOption = optionSelect.value;
+			const newAnswer = answerText.value.trim();
+			currentAnswers[selectedOption] = newAnswer;
+			
+			// 更新对应的数据容器
+			switch(currentTestType) {
+				case 'pearl':
+					data.pearl[selectedOption] = newAnswer;
+					break;
+				case 'usa':
+					data.usa[selectedOption] = newAnswer;
+					break;
+				case 'life':
+					data.life[selectedOption] = newAnswer;
+					break;
+				case 'family':
+					data.family[selectedOption] = newAnswer;
+					break;
+				case 'zhihuyou':
+					data.zhihuyou[selectedOption] = newAnswer;
+					break;
+				case 'leftHand':
+					data.left_hand[selectedOption] = newAnswer;
+					break;
+				case 'hiddenTalent':
+					data.hidden_talent[selectedOption] = newAnswer;
+					break;
+				case 'threeAnimals':
+					data.animal[selectedOption] = newAnswer;
+					break;
+				case 'mbti':
+					data.mbti[selectedOption] = newAnswer;
+					break;
+				case 'loveIndex':
+					data.love_fidelity[selectedOption] = newAnswer;
+					break;
+				case 'pillow':
+					data.pillow[selectedOption] = newAnswer;
+					break;
+				case 'monkey':
+					data.monkey[selectedOption] = newAnswer;
+					break;
+				case 'lookHand':
+					data.look_hand[selectedOption] = newAnswer;
+					break;
+				case 'loveFortune':
+					data.love_fortune[selectedOption] = newAnswer;
+					break;
+				case 'fearRoad':
+					data.fear_road[selectedOption] = newAnswer;
+					break;
+				case 'glassHeart':
+					data.glass_heart[selectedOption] = newAnswer;
+					break;
+				case 'hotSpring':
+					data.wen_quan[selectedOption] = newAnswer;
+					break;
+				case 'scheming':
+					data.cheng_fu[selectedOption] = newAnswer;
+					break;
+				case 'loveBrain':
+					data.lianai_nao[selectedOption] = newAnswer;
+					break;
+				case 'suitableType':
+					data.shi_he[selectedOption] = newAnswer;
+					break;
+				case 'bornIncompatible':
+					data.bu_he[selectedOption] = newAnswer;
+					break;
+				case 'mentalAge':
+					data.heart_age[selectedOption] = newAnswer;
+					break;
+				case 'sexualOrientation1':
+					data.sex_quxiang1[selectedOption] = newAnswer;
+					break;
+				case 'soulGender':
+					data.ling_hun[selectedOption] = newAnswer;
+					break;
+				case 'cheatingTendency':
+					data.chu_gui[selectedOption] = newAnswer;
+					break;
+				case 'childhoodTrauma':
+					data.tong_nian[selectedOption] = newAnswer;
+					break;
+				case 'coupleTest':
+					data.shuang_ren[selectedOption] = newAnswer;
+					break;
+				case 'bornIncompatible2':
+					data.tian_sheng[selectedOption] = newAnswer;
+					break;
+				case 'sexualOrientation':
+					data.xing_quxiang[selectedOption] = newAnswer;
+					break;
+				case 'marry':
+					data.jia_ren[selectedOption] = newAnswer;
+					break;
+				case 'fiveStar':
+					data.five_star[selectedOption] = newAnswer;
+					break;
+				case 'sameOppositeSex':
+					data.tong_yi[selectedOption] = newAnswer;
+					break;
+				case 'divorceRate':
+					data.li_hun[selectedOption] = newAnswer;
+					break;
+				case 'afraidMarriage':
+					data.afraid_marriage[selectedOption] = newAnswer;
+					break;
+				case 'otherHalf':
+					data.other_half[selectedOption] = newAnswer;
+					break;
+				case 'virtualDream':
+					data.virtual_dream[selectedOption] = newAnswer;
+					break;
+				case 'virtualIndex':
+					data.virtual_index[selectedOption] = newAnswer;
+					break;
+				case 'hbdi':
+					data.hbdi[selectedOption] = newAnswer;
+					break;
+			}
+			
+			saveData();
+			alert("答案已保存。");
+		}
 
         // 保存数据到localStorage
         function saveData() {
@@ -1483,7 +1576,9 @@
         }
 
         // 页面加载时获取数据
-        window.addEventListener('DOMContentLoaded', loadData);
+		document.addEventListener('DOMContentLoaded', function() {
+			loadData();
+		});
     </script>
 </body>
 </html>

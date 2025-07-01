@@ -707,9 +707,9 @@
 			// 显示第一个选项的答案
 			if (options.length > 0) {
 				optionSelect.value = options[0];
-				showAnswer();
+				showAnswer(); // 确保这里调用了showAnswer()
 			} else {
-				answerText.value = '';
+				answerText.value = '暂无可用选项';
 			}
 		}
 
@@ -717,10 +717,17 @@
 		function showAnswer() {
 			try {
 				const selectedOption = optionSelect.value;
-				if (!selectedOption) return;
+				if (!selectedOption) {
+					answerText.value = '请先选择一个选项';
+					return;
+				}
 				
-				const answer = currentAnswers[selectedOption] || '暂无答案，请先分析或编辑';
-				answerText.value = answer;
+				// 检查当前答案是否存在
+				if (currentAnswers && currentAnswers[selectedOption]) {
+					answerText.value = currentAnswers[selectedOption];
+				} else {
+					answerText.value = '暂无答案，请先分析或编辑';
+				}
 			} catch (error) {
 				console.error('显示答案时出错:', error);
 				answerText.value = '显示答案时出错: ' + error.message;
@@ -934,7 +941,7 @@
 
             // 检查是否已有答案
             const optionKey = validOptions.join('');
-            if (data.virtualIndex[optionKey]) {
+            if (data.virtual_index[optionKey]) {
                 optionSelect.value = optionKey;
                 showAnswer();
                 return;
@@ -942,7 +949,7 @@
 
             // 更新当前答案
             currentAnswers[optionKey] = result;
-            data.virtualIndex[optionKey] = result;
+            data.virtual_index[optionKey] = result;
 
             // 更新界面但不保存到文件
             updateOptionMenu();
@@ -1001,7 +1008,7 @@
             
             // 检查是否已有答案
             const optionKey = validOptions.join('');
-            if (data.virtualDream[optionKey]) {
+            if (data.virtual_dream[optionKey]) {
                 optionSelect.value = optionKey;
                 showAnswer();
                 return;
@@ -1048,7 +1055,7 @@
 
             // 更新当前答案
             currentAnswers[optionKey] = resultStr;
-            data.virtualDream[optionKey] = resultStr;
+            data.virtual_dream[optionKey] = resultStr;
 
             // 更新界面但不保存到文件
             updateOptionMenu();
@@ -1109,7 +1116,7 @@
 
             // 检查是否已有答案
             const optionKey = animals.join('');
-            if (data.otherHalf[optionKey]) {
+            if (data.other_half[optionKey]) {
                 optionSelect.value = optionKey;
                 showAnswer();
                 return;
@@ -1117,7 +1124,7 @@
 
             // 更新当前答案
             currentAnswers[optionKey] = resultStr;
-            data.otherHalf[optionKey] = resultStr;
+            data.other_half[optionKey] = resultStr;
 
             // 更新界面但不保存到文件
             updateOptionMenu();
@@ -1421,7 +1428,7 @@
 
             // 检查是否已有答案
             const optionKey = validOptions.join('');
-            if (data.afraidMarriage[optionKey]) {
+            if (data.afraid_marriage[optionKey]) {
                 optionSelect.value = optionKey;
                 showAnswer();
                 return;
@@ -1429,7 +1436,7 @@
 
             // 更新当前答案
             currentAnswers[optionKey] = resultStr;
-            data.afraidMarriage[optionKey] = resultStr;
+            data.afraid_marriage[optionKey] = resultStr;
 
             // 更新界面但不保存到文件
             updateOptionMenu();

@@ -2,438 +2,1349 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <title>MBTI性格特征测试</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心理测试系统</title>
     <style>
         body {
-            font-family: "微软雅黑", sans-serif;
-            max-width: 1000px;
-            margin: 50px auto;
-            padding: 30px;
-            background-color: #f0f2f5;
-        }
-
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.08);
-        }
-
-        h1 {
-            color: #1a73e8;
-            text-align: center;
-            margin-bottom: 10px;
-            font-size: 2.3em;
-            font-weight: 600;
-        }
-        
-        .author {
-            text-align: center;
-            color: #666;
-            margin-bottom: 30px;
-            font-size: 0.9em;
-        }
-
-        .select-section {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        select {
-            padding: 16px 25px;
-            font-size: 18px;
-            width: 350px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            background: white;
-            outline: none;
-            appearance: none;
-            cursor: pointer;
-            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='1.5' stroke='%23333' width='24px' height='24px'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            transition: border-color 0.3s;
-        }
-
-        select:hover {
-            border-color: #1a73e8;
-        }
-
-        .result-table {
-            width: 100%;
-            margin-top: 30px;
-            border-collapse: collapse;
-        }
-
-        .result-table th {
-            background: #f8f9fa;
-            font-weight: 500;
-            padding: 18px;
-            border-bottom: 2px solid #e0e0e0;
-            text-align: left;
-            width: 22%;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
             color: #333;
         }
-
-        .result-table td {
-            padding: 18px;
-            border-bottom: 2px solid #f0f0f0;
-            line-height: 1.7;
-            font-size: 1.05em;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        .characteristic {
-            color: #1a73e8;
-            font-weight: 600;
-            display: block;
-            margin-bottom: 10px;
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
         }
-
-        .life-summary {
-            white-space: pre-wrap;
+        .control-group {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+        label {
+            margin-right: 10px;
+            min-width: 80px;
+            font-weight: bold;
+        }
+        select, input {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex-grow: 1;
+            font-size: 14px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
             margin-top: 15px;
-            color: #666;
-            font-size: 0.95em;
         }
-
-        .animal-icon {
-            font-size: 1.2em;
-            margin-left: 5px;
-            color: #ff9800;
+        textarea {
+            width: 100%;
+            height: 400px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            line-height: 1.5;
+            resize: vertical;
+            margin-top: 15px;
+        }
+        .hidden {
+            display: none;
+        }
+        .input-group {
+            display: flex;
+            margin-top: 15px;
+        }
+        .input-group input {
+            flex-grow: 1;
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>MBTI性格特征测试</h1>
-        <div class="author">@点亮心灵Miss徐</div>
-        <div class="select-section">
-            <select id="mbtiSelect" required>
-                <option value="" disabled selected>请选择MBTI性格类型</option>
-                <option value="INTJ">INTJ - 建筑师/战略家</option>
-                <option value="INTP">INTP - 逻辑学家/思想家</option>
-                <option value="ENTJ">ENTJ - 指挥官/领导者</option>
-                <option value="ENTP">ENTP - 辩论家/发明家</option>
-                <option value="INFJ">INFJ - 倡导者/咨询师</option>
-                <option value="INFP">INFP - 调停者/理想主义者</option>
-                <option value="ENFJ">ENFJ - 主人公/导师</option>
-                <option value="ENFP">ENFP - 竞选者/激发者</option>
-                <option value="ISTJ">ISTJ - 物流师/检查员</option>
-                <option value="ISFJ">ISFJ - 守卫者/保护者</option>
-                <option value="ESTJ">ESTJ - 总经理/监督者</option>
-                <option value="ESFJ">ESFJ - 执政官/供给者</option>
-                <option value="ISTP">ISTP - 鉴赏家/巧匠</option>
-                <option value="ISFP">ISFP - 探险家/艺术家</option>
-                <option value="ESTP">ESTP - 企业家/实践者</option>
-                <option value="ESFP">ESFP - 表演者/娱乐者</option>
+        <h1>心理测试系统</h1>
+        
+        <div class="control-group">
+            <label for="testType">选择测试类型:</label>
+            <select id="testType">
+                <option value="life">人生主角</option>
+                <option value="afraidMarriage">恐婚族</option>
+                <option value="otherHalf">另一半</option>
+                <option value="virtualDream">虚拟梦境</option>
+                <option value="virtualIndex">虚伪指数</option>
+                <option value="suitableType">适合类型</option>
+                <option value="bornIncompatible">天生不合</option>
+                <option value="mentalAge">心理年龄</option>
+                <option value="sexualOrientation1">性取向1</option>
+                <option value="threeAnimals">选三种动物</option>
+                <option value="bornIncompatible2">天生不合</option>
+                <option value="hbdi">HBDI全脑优势</option>
+                <option value="cheatingTendency">易出轨体质</option>
+                <option value="soulGender">灵魂性别</option>
+                <option value="sexualOrientation">性取向</option>
+                <option value="leftHand">摊开左手</option>
+                <option value="lookHand">低头看手</option>
+                <option value="pearl">选择珍珠</option>
+                <option value="zhihuyou">痣湖由</option>
+                <option value="hiddenTalent">隐藏天赋</option>
+                <option value="loveIndex">爱情指数</option>
+                <option value="loveFortune">爱情运势</option>
+                <option value="loveBrain">恋爱脑</option>
+                <option value="fearRoad">恐惧的路</option>
+                <option value="childhoodTrauma">童年创伤</option>
+                <option value="family">原生家庭</option>
+                <option value="sameOppositeSex">同性异性</option>
+                <option value="marry">嫁人</option>
+                <option value="coupleTest">双人测试</option>
+                <option value="glassHeart">玻璃心</option>
+                <option value="divorceRate">离婚率</option>
+                <option value="usa">左右脑USA</option>
+                <option value="pillow">枕头</option>
+                <option value="monkey">选猴子</option>
+                <option value="hotSpring">温泉</option>
+                <option value="scheming">城府</option>
+                <option value="mbti">MBTI</option>
+                <option value="fiveStar">五角星</option>
             </select>
         </div>
-
-        <table class="result-table" id="resultTable"></table>
+        
+        <div class="control-group">
+            <label for="optionSelect">选择选项:</label>
+            <select id="optionSelect"></select>
+        </div>
+        
+        <div id="inputGroup" class="input-group hidden">
+            <input type="text" id="inputEntry" placeholder="输入选项序列">
+            <button id="analyzeBtn">分析</button>
+        </div>
+        
+        <textarea id="answerText" readonly></textarea>
+        
+        <div class="button-group">
+            <button id="editBtn">编辑当前答案</button>
+            <button id="reloadBtn">重新加载数据</button>
+        </div>
     </div>
 
     <script>
-        // 完整16型MBTI数据
-        const mbtiData = {
-            "INTJ": {
-                "代号": "建筑师 / 战略家",
-                "优点": "战略性强、独立思考、目标明确、执行力高，善于长远规划，理性冷静，能高效解决问题。",
-                "缺点": "过于理性，容易忽视他人情感；固执己见，不轻易接受他人意见；有时显得冷漠或傲慢，社交中可能显得疏离。",
-                "座右铭": "效率至上，目标必达。",
-                "最佳伴侣": "ENFP、ENTP",
-                "适合岗位": "战略顾问、数据分析师、人工智能研究员、金融投资经理、科技公司CTO",
-                "受欢迎程度排名": "第12",
-                "稀有度": "2.1%，排名第3",
-                "恋爱脑表现": "【轻度】理性规划感情像做项目，默默观察不轻易表白，但内心已规划好未来十年。",
-                "对应动物": "猫头鹰",
-                "人生总结": "【战略家与革新者】早年：独立思考，沉迷知识，常被视为“怪才”。中年：制定长期目标，在专业领域成为权威，追求效率与创新。晚年：留下系统性遗产（著作、理论或企业），但可能因疏于情感而孤独。总结：用理性构建世界，用远见改变规则，但情感世界可能荒芜。"
-            },
-            "INTP": {
-                "代号": "逻辑学家 / 思想家",
-                "优点": "思维敏捷、好奇心强、善于分析、创新力强，喜欢探索理论，逻辑严谨，擅长解决复杂问题。",
-                "缺点": "容易陷入过度思考，行动力不足；对细节不敏感，可能忽略现实问题；社交能力较弱，容易显得疏离或不合群。",
-                "座右铭": "真理藏在问题深处，探索永无止境。",
-                "最佳伴侣": "ENTJ、INFJ",
-                "适合岗位": "软件工程师、科研人员、算法专家、哲学/理论研究者、游戏设计师",
-                "受欢迎程度排名": "第15",
-                "稀有度": "3.3%，排名第6",
-                "恋爱脑表现": "【中度】整天研究\"爱情原理\"却不敢行动，约会时突然讨论黑洞理论让对方懵逼。",
-                "对应动物": "章鱼",
-                "人生总结": "【永恒的探索者】早年：好奇心旺盛，涉猎广泛但难以专注。中年：在科学、哲学或技术领域深耕，提出颠覆性理论。晚年：被后人视为“天才”，但可能因拖延而未完成毕生项目。总结：思维无边界，现实执行力是短板，一生在解构与重建中度过。"
-            },
-            "ENTJ": {
-                "代号": "指挥官 / 领导者",
-                "优点": "领导力强、果断自信、执行力高、善于组织，目标导向，能激励团队高效完成任务。",
-                "缺点": "过于强势，可能压制他人意见；缺乏耐心，对效率低的人容易不耐烦；有时显得冷酷，忽视他人情感需求。",
-                "座右铭": "领导不是权力，而是责任。",
-                "最佳伴侣": "INTP、INTJ",
-                "适合岗位": "企业CEO、管理咨询顾问、律师、军官、创业公司创始人",
-                "受欢迎程度排名": "第6",
-                "稀有度": "1.8%，排名第2",
-                "恋爱脑表现": "【重度】把恋爱当商业并购谈判，制定KPI考核恋人表现，连约会都要做SWOT分析。",
-                "对应动物": "狮子",
-                "人生总结": "【征服与统治】早年：学生领袖，野心勃勃，制定人生规划。中年：掌控企业或组织，以铁腕手段推动变革。晚年：成为行业教父，但可能因强势疏远亲人。总结：一生在挑战中攀登巅峰，但需学会柔软才能不留遗憾。"
-            },
-            "ENTP": {
-                "代号": "辩论家 / 发明家",
-                "优点": "思维活跃、创意丰富、适应力强、善于辩论，喜欢挑战传统，擅长多角度思考问题。",
-                "缺点": "喜欢争论，可能引发冲突；执行力不稳定，容易半途而废；有时过于自信，低估风险或他人感受。",
-                "座右铭": "规则？那只是建议。",
-                "最佳伴侣": "INFJ、INTJ",
-                "适合岗位": "市场营销总监、创业顾问、产品经理、政策分析师、风险投资人",
-                "受欢迎程度排名": "第7",
-                "稀有度": "3.2%，排名第5",
-                "恋爱脑表现": "【中度】用一百种方式撩人却不说\"喜欢\"，把调情当辩论赛非要争输赢。",
-                "对应动物": "狐狸",
-                "人生总结": "【挑战与颠覆】早年：诡辩天才，热衷辩论，兴趣多变。中年：创业或成为意见领袖，靠敏捷思维取胜。晚年：被铭记为“思想的火花”，但可能因缺乏坚持而错过巅峰。总结：用智慧点燃世界，但需专注才能让火焰持久。"
-            },
-            "INFJ": {
-                "代号": "倡导者 / 咨询师",
-                "优点": "洞察力强、富有同理心、理想主义、善于倾听，能深刻理解他人，追求有意义的事业。",
-                "缺点": "过度理想化，容易对现实失望；敏感多虑，容易内耗；不擅长拒绝他人，可能被过度消耗。",
-                "座右铭": "用理解治愈世界，哪怕只有一个人。",
-                "最佳伴侣": "ENFP、ENTP",
-                "适合岗位": "心理咨询师、HRBP（人力资源业务伙伴）、社会工作者、非营利组织管理者",
-                "受欢迎程度排名": "第5",
-                "稀有度": "1.5%，排名第1",
-                "恋爱脑表现": "【重度】一眼万年认定灵魂伴侣，对方随口一句话能脑补出50集连续剧。",
-                "对应动物": "狼",
-                "人生总结": "【理想与救赎】早年：敏感早慧，寻求人生意义。中年：投身公益、心理学或艺术，影响他人心灵。晚年：被视为“精神导师”，但可能因过度共情而疲惫。总结：燃烧自己照亮他人，但需学会自我保护。"
-            },
-            "INFP": {
-                "代号": "调停者 / 理想主义者",
-                "优点": "真诚善良、想象力丰富、价值观坚定、富有同情心，追求和谐，忠于内心信念。",
-                "缺点": "过于情绪化，容易受外界影响；逃避冲突，可能压抑真实想法；执行力较弱，容易拖延或犹豫不决。",
-                "座右铭": "善良是我的铠甲，真诚是我的语言。",
-                "最佳伴侣": "ENFJ、INFJ",
-                "适合岗位": "作家/编剧、艺术治疗师、教育顾问、NGO工作者、自由职业者",
-                "受欢迎程度排名": "第11",
-                "稀有度": "4.4%，排名第8",
-                "恋爱脑表现": "【重度】暗恋三年不敢开口，写300首情诗却全锁抽屉里，对方看过来就脸红逃跑。",
-                "对应动物": "鹿",
-                "人生总结": "【诗意与挣扎】早年：内向幻想，在文学或艺术中逃避现实。中年：通过创作或心理咨询表达内心，寻找归属。晚年：留下感动人心的作品，但可能因理想主义而失望。总结：一生在现实与乌托邦间摇摆，温柔却易碎。"
-            },
-            "ENFJ": {
-                "代号": "主人公 / 导师",
-                "优点": "热情友善、善于激励、沟通力强、有感染力，乐于帮助他人成长，天生的领导者。",
-                "缺点": "过度关注他人，可能忽视自己需求；容易因他人评价而焦虑；控制欲较强，可能干涉他人决定。",
-                "座右铭": "你的成长，就是我的成就。",
-                "最佳伴侣": "INFP、ISFP",
-                "适合岗位": "团队教练、培训师、公关经理、社区管理者、教育机构主管",
-                "受欢迎程度排名": "第1",
-                "稀有度": "2.5%，排名第4",
-                "恋爱脑表现": "【中度】把恋人当重点培养项目，每天嘘寒问暖像个人生导师，控制欲爆棚。",
-                "对应动物": "海豚",
-                "人生总结": "【激励与引领】早年：班级核心，乐于助人，渴望被需要。中年：成为教育家、政治家或团队领袖，塑造他人成长。晚年：被追随者铭记，但可能因过度付出而透支。总结：用热情点燃他人，但需警惕自我牺牲。"
-            },
-            "ENFP": {
-                "代号": "竞选者 / 激发者",
-                "优点": "乐观开朗、创造力强、适应力高、善于社交，充满激情，能激发他人灵感。",
-                "缺点": "注意力分散，难以坚持长期目标；情绪波动大，容易三分钟热度；有时过于乐观，低估现实困难。",
-                "座右铭": "人生是冒险，快乐是指南针。",
-                "最佳伴侣": "INFJ、INTJ",
-                "适合岗位": "品牌策划、用户体验研究员、创意总监、社交媒体运营、创业孵化顾问",
-                "受欢迎程度排名": "第3",
-                "稀有度": "8.1%，排名第10",
-                "恋爱脑表现": "【轻度】一见钟情就上头，三天后发现新目标就转移，永远在crush从不稳定。",
-                "对应动物": "鹦鹉",
-                "人生总结": "【自由与可能性】早年：活力四射，兴趣广泛但难以坚持。中年：尝试多种职业，最终找到使命（如媒体、创意行业）。晚年：被赞为“永远年轻”，但可能因缺乏沉淀而遗憾。总结：一生追逐彩虹，但需落地才能触摸天空。"
-            },
-            "ISTJ": {
-                "代号": "物流师 / 检查员",
-                "优点": "责任感强、务实可靠、条理清晰、注重细节，遵守规则，执行力强且值得信赖。",
-                "缺点": "过于保守，抗拒变化；固执己见，不轻易接受新方法；有时显得刻板，缺乏灵活性。",
-                "座右铭": "责任不容妥协，细节决定成败。",
-                "最佳伴侣": "ESFP、ESTP",
-                "适合岗位": "会计师、审计师、项目管理、法律合规、供应链管理",
-                "受欢迎程度排名": "第16",
-                "稀有度": "11.6%，排名第14",
-                "恋爱脑表现": "【轻度】按教科书步骤谈恋爱，纪念日必送实用礼物，但浪漫程度堪比Excel表格。",
-                "对应动物": "蚂蚁",
-                "人生总结": "【秩序与责任】早年：模范学生，遵守规则，厌恶变动。中年：成为可靠的中层管理者或专业人士。晚年：因稳定贡献受尊敬，但可能因保守错过机遇。总结：社会机器的螺丝钉，稳固但缺乏变通。"
-            },
-            "ISFJ": {
-                "代号": "守卫者 / 保护者",
-                "优点": "体贴周到、忠诚可靠、耐心细致、善于照顾他人，默默付出，注重实际帮助。",
-                "缺点": "过度牺牲自己，容易疲惫；害怕冲突，可能压抑真实想法；对新事物适应较慢，容易固守习惯。",
-                "座右铭": "守护所爱之人，无声却坚定。",
-                "最佳伴侣": "ESFP、ESTP",
-                "适合岗位": "护士、教师（小学/特殊教育）、行政助理、客户服务、档案管理",
-                "受欢迎程度排名": "第14",
-                "稀有度": "13.8%，排名第16",
-                "恋爱脑表现": "【中度】默默记住对方所有喜好，委屈到哭也不说，用自我感动式付出绑架感情。",
-                "对应动物": "大象",
-                "人生总结": "【奉献与守护】早年：乖巧懂事，照顾家人朋友。中年：在医疗、教育或服务行业默默付出。晚年：被亲人依赖，但可能因忽视自我而疲惫。总结：温暖的避风港，但需学会为自己而活。"
-            },
-            "ESTJ": {
-                "代号": "总经理 / 监督者",
-                "优点": "组织力强、高效务实、决策果断、责任感重，擅长管理，确保事情按计划进行。",
-                "缺点": "过于严格，可能显得专制；缺乏同理心，忽视他人感受；抗拒创新，偏好传统方式。",
-                "座右铭": "秩序带来效率，纪律成就卓越。",
-                "最佳伴侣": "ISTP、INTP",
-                "适合岗位": "企业高管、财务总监、政府行政、生产运营经理、军队指挥官",
-                "受欢迎程度排名": "第10",
-                "稀有度": "8.7%，排名第12",
-                "恋爱脑表现": "【重度】把约会排进行程表精确到分钟，恋人迟到就发火，恋爱像军事化管理。",
-                "对应动物": "蜜蜂",
-                "人生总结": "【效率与权威】早年：班长或社团领袖，崇尚纪律。中年：企业高管或政府官员，维护传统与规则。晚年：被视为“社会支柱”，但可能因固执而孤立。总结：现实的建筑师，但需包容变化。"
-            },
-            "ESFJ": {
-                "代号": "执政官 / 供给者",
-                "优点": "友善热心、合作性强、善于协调、注重和谐，乐于支持他人，维持团体稳定。",
-                "缺点": "过度在意他人评价，容易焦虑；控制欲强，喜欢干涉他人生活；对新观念接受较慢，容易守旧。",
-                "座右铭": "团结就是力量，关怀凝聚人心。",
-                "最佳伴侣": "ISFP、ISTP",
-                "适合岗位": "人力资源经理、医疗健康管理、社区服务、酒店管理、客户关系维护",
-                "受欢迎程度排名": "第4",
-                "稀有度": "12.3%，排名第15",
-                "恋爱脑表现": "【中度】恋爱就变身监控摄像头，一小时没回消息就疯狂连环call查岗。",
-                "对应动物": "狗",
-                "人生总结": "【和谐与归属】早年：社交达人，维系团体情感。中年：社区领袖或家庭核心，营造温暖环境。晚年：被亲友环绕，但可能因过度干涉他人而矛盾。总结：人际关系的粘合剂，但需尊重边界。"
-            },
-            "ISTP": {
-                "代号": "鉴赏家 / 巧匠",
-                "优点": "冷静灵活、动手能力强、善于应对危机、喜欢实践，独立解决问题，适应现实变化。",
-                "缺点": "情感表达较少，显得冷漠；不喜欢承诺，可能显得不可靠；容易冲动，缺乏长期规划。",
-                "座右铭": "动手解决，胜过空谈千言。",
-                "最佳伴侣": "ESTJ、ESFJ",
-                "适合岗位": "机械工程师、飞行员、网络安全专家、紧急救援、自由职业技工",
-                "受欢迎程度排名": "第13",
-                "稀有度": "5.4%，排名第9",
-                "恋爱脑表现": "【轻度】用修电脑表达爱意，觉得说情话太肉麻，实际行动却宠到没边。",
-                "对应动物": "猎豹",
-                "人生总结": "【冒险与实操】早年：动手能力强，热衷机械或运动。中年：工程师、运动员或手艺人，靠技能生存。晚年：留下实用遗产（发明、作品），但可能因疏离情感而孤独。总结：冷静的冒险家，活在当下却难扎根。"
-            },
-            "ISFP": {
-                "代号": "探险家 / 艺术家",
-                "优点": "温和友善、审美力强、活在当下、追求自由，注重个人感受，善于创造美好氛围。",
-                "缺点": "回避冲突，可能压抑真实情绪；行动随性，缺乏长远计划；容易自我怀疑，自信心不足。",
-                "座右铭": "感受当下，艺术即生活。",
-                "最佳伴侣": "ENFJ、ESFJ",
-                "适合岗位": "平面设计师、音乐人、园艺师、宠物护理、旅游策划",
-                "受欢迎程度排名": "第8",
-                "稀有度": "8.8%，排名第13",
-                "恋爱脑表现": "【重度】暗恋到地老天荒，对方恋爱了就默默祝福，深夜听情歌哭成狗。",
-                "对应动物": "猫",
-                "人生总结": "【美感与自由】早年：艺术天赋显现，抗拒束缚。中年：成为艺术家、设计师或自由职业者。晚年：作品被珍藏，但可能因逃避冲突而遗憾。总结：温柔的叛逆者，追求美却畏惧世俗。"
-            },
-            "ESTP": {
-                "代号": "企业家 / 实践者",
-                "优点": "行动力强、机智灵活、适应力高、善于社交，喜欢冒险，能快速应对突发情况。",
-                "缺点": "冲动冒险，容易忽视风险；缺乏耐心，难以坚持长期目标；有时显得自私，忽视他人感受。",
-                "座右铭": "风险？那只是另一个机会。",
-                "最佳伴侣": "ISFJ、ISTJ",
-                "适合岗位": "销售总监、体育经纪人、危机管理顾问、创业CEO、特种行业（如消防员）",
-                "受欢迎程度排名": "第9",
-                "稀有度": "4.3%，排名第7",
-                "恋爱脑表现": "【中度】追人时花样百出，到手就嫌无聊，永远在狩猎不爱被束缚。",
-                "对应动物": "鹰",
-                "人生总结": "【刺激与征服】早年：校园风云人物，热衷冒险。中年：创业或销售精英，靠胆识成功。晚年：传奇故事流传，但可能因冲动付出代价。总结：现实的赌徒，赢得多也输得狠。"
-            },
-            "ESFP": {
-                "代号": "表演者 / 娱乐者",
-                "优点": "热情活泼、感染力强、善于交际、享受当下，能带动气氛，让周围人感到快乐。",
-                "缺点": "注意力分散，难以深入思考；过度追求享乐，可能忽视责任；情绪化，容易受外界影响。",
-                "座右铭": "快乐会传染，不如一起狂欢！",
-                "最佳伴侣": "ISTJ、ISFJ",
-                "适合岗位": "娱乐行业（演员/主持人）、活动策划、时尚买手、健身教练、客户体验经理",
-                "受欢迎程度排名": "第2",
-                "稀有度": "8.5%，排名第11",
-                "恋爱脑表现": "【轻度】恋爱像开派对天天惊喜，但生气来得快去得快，三分钟哄好就没事。",
-                "对应动物": "孔雀",
-                "人生总结": "【欢乐与存在感】早年：派对中心，追求即时快乐。中年：娱乐行业或社交型职业，靠魅力生存。晚年：被怀念为“开心果”，但可能因缺乏规划而后悔。总结：生命的舞者，享受当下却难留痕迹。"
-            }
+        // 数据容器
+        const data = {
+            pearl: {},
+            usa: {},
+            life: {},
+            family: {},
+            zhihuyou: {},
+            leftHand: {},
+            hiddenTalent: {},
+            animal: {},
+            mbti: {},
+            loveFidelity: {},
+            pillow: {},
+            monkey: {},
+            lookHand: {},
+            loveFortune: {},
+            fearRoad: {},
+            glassHeart: {},
+            wenQuan: {},
+            chengFu: {},
+            lianaiNao: {},
+            shiHe: {},
+            buHe: {},
+            heartAge: {},
+            sexQuxiang1: {},
+            lingHun: {},
+            chuGui: {},
+            tongNian: {},
+            shuangRen: {},
+            tianSheng: {},
+            xingQuxiang: {},
+            jiaRen: {},
+            fiveStar: {},
+            tongYi: {},
+            liHun: {},
+            afraidMarriage: {},
+            otherHalf: {},
+            virtualDream: {},
+            virtualIndex: {},
+            hbdi: {}
         };
 
-        // 等待DOM完全加载后再执行
-        document.addEventListener('DOMContentLoaded', function() {
-            // 获取DOM元素
-            const mbtiSelect = document.getElementById('mbtiSelect');
-            const resultTable = document.getElementById('resultTable');
+        // 预设数据
+        const lifePresets = [
+            "1a2b2c", "2a1b2d", "1a3c1d", "2a2b1c", "1a1b3c",
+            "2b3c", "1a1b3d", "3b2d", "5a", "2b3d",
+            "1a2b1c1d", "1a1b1c2d", "1a4b", "1a3b1d", "3a1b1d",
+            "3a2b", "4b1d", "1a2b2d", "4b1c", "2b1c2d",
+            "3b1c1d", "3b2c", "2a1b1c1d", "1a3b1c", "2a3b",
+            "5b", "3a1c1d", "1a4d", "2b2c1d", "3a2d",
+            "2a2b1d", "1b2c2d", "1a2c2d", "4a1b", "3a1b1c",
+            "2c3d", "2a1b2c", "1b3c1d", "1b1c3d", "1b4d",
+            "1a1b2c1d", "4a1d", "1a1c3d", "1b4c", "4c1d",
+            "3a2c", "2a2c1d", "2a3c", "2a1c2d", "3c2d"
+        ];
+
+        const familyMappings = [
+            {"A": "回避型", "B": "功能型", "C": "回避型", "D": "功能型"},
+            {"A": "乐观型", "B": "功能型", "C": "指责型", "D": "回避型"},
+            {"A": "功能型", "B": "回避型", "C": "指责型", "D": "回避型"},
+            {"A": "乐观型", "B": "指责型", "C": "功能型", "D": "回避型"},
+            {"A": "乐观型", "B": "指责型", "C": "功能型", "D": "回避型"}
+        ];
+
+        const animalMappings = {
+            "狗": "【狗】个性温和，善解人意，愿意为朋友两肋插刀，为人正直而富有同情心，值得大家的信赖",
+            "熊": "【熊】老实憨厚，直性子为人单纯，做事小心谨慎，比较能够给人带来安全。",
+            "猴": "【猴子】聪明灵活，幽默风趣，在一起不会让人感到枯燥，好奇心比较强",
+            "狮": "【狮子】高大威猛，英勇果敢，在人群中比较耀眼，具有领导气质，自尊心比较强",
+            "鼠": "【松鼠】喜欢自由，稚嫩中带有一丝孩子气俏皮可爱的外表之下，有着非常坚定的信念",
+            "羊": "【羊】外表柔弱，内心坚强，会默默地追求自己喜欢的东西，对朋友很好",
+            "兔": "【兔子】可爱而又富有魅力，容易激起别人的保护欲，个性温柔优雅，非常讨人喜欢",
+            "鹅": "【企鹅】沉着冷静，相对保守一些，对很多事情都无动于衷，有时候会胆小一些",
+            "猫": "【猫】有些神秘感，比较傲娇，不喜欢被别人束缚的感觉，生活中会比较坚持自我。"
+        };
+
+        // DOM元素
+        const testTypeSelect = document.getElementById('testType');
+        const optionSelect = document.getElementById('optionSelect');
+        const inputGroup = document.getElementById('inputGroup');
+        const inputEntry = document.getElementById('inputEntry');
+        const analyzeBtn = document.getElementById('analyzeBtn');
+        const answerText = document.getElementById('answerText');
+        const editBtn = document.getElementById('editBtn');
+        const reloadBtn = document.getElementById('reloadBtn');
+
+        // 当前选中的测试类型和答案
+        let currentTestType = 'life';
+        let currentAnswers = {};
+
+        // 初始化
+        function init() {
+            // 加载本地存储的数据
+            loadData();
             
-            // 添加事件监听器
-            mbtiSelect.addEventListener('change', function() {
-                const selectedType = this.value;
-                if (selectedType && mbtiData[selectedType]) {
-                    displayMBTIDetails(selectedType);
+            // 设置事件监听器
+            testTypeSelect.addEventListener('change', onTestChange);
+            optionSelect.addEventListener('change', onOptionChange);
+            analyzeBtn.addEventListener('click', analyzeInput);
+            editBtn.addEventListener('click', editAnswer);
+            reloadBtn.addEventListener('click', loadData);
+            
+            // 初始化选项
+            updateOptionMenu();
+        }
+
+        // 测试类型改变时的处理
+        function onTestChange() {
+            currentTestType = testTypeSelect.value;
+            updateOptionMenu();
+        }
+
+        // 选项改变时的处理
+        function onOptionChange() {
+            showAnswer();
+        }
+
+        // 更新选项菜单
+        function updateOptionMenu() {
+            let options = [];
+            
+            switch(currentTestType) {
+                case 'pearl':
+                    options = ["1", "2", "3", "4", "5", "6"];
+                    currentAnswers = data.pearl;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'usa':
+                    options = ["U/U", "U/U女", "U/U男", "U/SA", "U/SA女", "U/SA男",
+                              "SA/U", "SA/U女", "SA/U男", "SA/SA", "SA/SA女", "SA/SA男"];
+                    currentAnswers = data.usa;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'life':
+                    // 合并预设选项和已保存的自定义选项
+                    const allLifeOptions = [...new Set([...lifePresets, ...Object.keys(data.life)])];
+                    options = allLifeOptions.sort((a, b) => a.localeCompare(b));
+                    
+                    // 创建当前答案字典
+                    currentAnswers = {};
+                    for (const opt of options) {
+                        currentAnswers[opt] = data.life[opt] || `人生主角测试结果: ${opt}\n\n(这是预设选项，您可以编辑此解释)`;
+                    }
+                    
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeLifeInput;
+                    break;
+                    
+                case 'family':
+                    options = Object.keys(data.family);
+                    currentAnswers = data.family;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeFamilyInput;
+                    break;
+                    
+                case 'zhihuyou':
+                    options = Object.keys(data.zhihuyou);
+                    currentAnswers = data.zhihuyou;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeZhihuyouInput;
+                    break;
+                    
+                case 'leftHand':
+                    options = ["1", "2", "3", "4", "5"];
+                    currentAnswers = data.leftHand;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'hiddenTalent':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.hiddenTalent;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'threeAnimals':
+                    options = Object.keys(data.animal);
+                    currentAnswers = data.animal;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeAnimalInput;
+                    break;
+                    
+                case 'mbti':
+                    options = [
+                        "INTJ", "INTP", "ENTJ", "ENTP",
+                        "INFJ", "INFP", "ENFJ", "ENFP",
+                        "ISTJ", "ISFJ", "ESTJ", "ESFJ",
+                        "ISTP", "ISFP", "ESTP", "ESFP"
+                    ];
+                    currentAnswers = data.mbti;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'loveIndex':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.loveFidelity;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'pillow':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.pillow;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'monkey':
+                    options = ["1", "2", "3", "4", "5"];
+                    currentAnswers = data.monkey;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'lookHand':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.lookHand;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'loveFortune':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.loveFortune;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'fearRoad':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.fearRoad;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'glassHeart':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.glassHeart;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'hotSpring':
+                    options = ["1. 红色", "2. 橘色", "3. 黄色", "4. 浅绿色", "5. 深绿色", 
+                              "6. 粉红色", "7. 浅蓝色", "8. 紫色", "9. 深蓝色", "10. 不泡温泉反骨仔"];
+                    currentAnswers = data.wenQuan;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'scheming':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.chengFu;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'loveBrain':
+                    options = ["A", "B", "C", "D"];
+                    currentAnswers = data.lianaiNao;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'suitableType':
+                    options = ["A", "B", "C", "D"];
+                    currentAnswers = data.shiHe;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'bornIncompatible':
+                    options = ["A", "B", "C", "D"];
+                    currentAnswers = data.buHe;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'mentalAge':
+                    options = ["A", "B", "C", "D"];
+                    currentAnswers = data.heartAge;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'sexualOrientation1':
+                    options = ["A", "B", "C", "D"];
+                    currentAnswers = data.sexQuxiang1;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'soulGender':
+                    options = ["A", "B", "C", "D", "E"];
+                    currentAnswers = data.lingHun;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'cheatingTendency':
+                    options = ["A", "B", "C", "D"];
+                    currentAnswers = data.chuGui;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'childhoodTrauma':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.tongNian;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'coupleTest':
+                    options = ["A", "B", "C", "D", "E", "F", "G", "H", "I"];
+                    currentAnswers = data.shuangRen;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'bornIncompatible2':
+                    options = ["10分-18分", "19分-26分", "27分-34分", "35分-40分"];
+                    currentAnswers = data.tianSheng;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'sexualOrientation':
+                    options = ["低于 17 分", "27 - 34 分", "超过 35 分"];
+                    currentAnswers = data.xingQuxiang;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'marry':
+                    options = ["A", "B", "C", "D", "E"];
+                    currentAnswers = data.jiaRen;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'fiveStar':
+                    options = ["1", "2", "3", "4", "5"];
+                    currentAnswers = data.fiveStar;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'sameOppositeSex':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.tongYi;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'divorceRate':
+                    options = ["1", "2", "3", "4"];
+                    currentAnswers = data.liHun;
+                    inputGroup.classList.add('hidden');
+                    break;
+                    
+                case 'afraidMarriage':
+                    options = Object.keys(data.afraidMarriage);
+                    currentAnswers = data.afraidMarriage;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeAfraidMarriageInput;
+                    break;
+                    
+                case 'otherHalf':
+                    options = Object.keys(data.otherHalf);
+                    currentAnswers = data.otherHalf;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeOtherHalfInput;
+                    break;
+                    
+                case 'virtualDream':
+                    options = Object.keys(data.virtualDream);
+                    currentAnswers = data.virtualDream;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeVirtualDreamInput;
+                    break;
+                    
+                case 'virtualIndex':
+                    options = Object.keys(data.virtualIndex);
+                    currentAnswers = data.virtualIndex;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeVirtualIndexInput;
+                    break;
+                    
+                case 'hbdi':
+                    options = Object.keys(data.hbdi);
+                    currentAnswers = data.hbdi;
+                    inputGroup.classList.remove('hidden');
+                    analyzeBtn.textContent = "分析";
+                    analyzeBtn.onclick = analyzeHBDIInput;
+                    break;
+            }
+            
+            // 更新选项菜单
+            optionSelect.innerHTML = '';
+            options.forEach(option => {
+                const optionElement = document.createElement('option');
+                optionElement.value = option;
+                optionElement.textContent = option;
+                optionSelect.appendChild(optionElement);
+            });
+            
+            // 显示第一个选项的答案
+            if (options.length > 0) {
+                optionSelect.value = options[0];
+                showAnswer();
+            } else {
+                answerText.value = '';
+            }
+        }
+
+        // 显示当前选项的答案
+        function showAnswer() {
+            const selectedOption = optionSelect.value;
+            const answer = currentAnswers[selectedOption] || '';
+            answerText.value = answer;
+            
+            // 自动复制到剪贴板
+            navigator.clipboard.writeText(answer).catch(err => {
+                console.error('无法复制到剪贴板:', err);
+            });
+        }
+
+        // 分析输入
+        function analyzeInput() {
+            switch(currentTestType) {
+                case 'life':
+                    analyzeLifeInput();
+                    break;
+                case 'family':
+                    analyzeFamilyInput();
+                    break;
+                case 'zhihuyou':
+                    analyzeZhihuyouInput();
+                    break;
+                case 'threeAnimals':
+                    analyzeAnimalInput();
+                    break;
+                case 'afraidMarriage':
+                    analyzeAfraidMarriageInput();
+                    break;
+                case 'otherHalf':
+                    analyzeOtherHalfInput();
+                    break;
+                case 'virtualDream':
+                    analyzeVirtualDreamInput();
+                    break;
+                case 'virtualIndex':
+                    analyzeVirtualIndexInput();
+                    break;
+                case 'hbdi':
+                    analyzeHBDIInput();
+                    break;
+            }
+        }
+
+        // 分析HBDI全脑优势测试输入
+        function analyzeHBDIInput() {
+            const inputStr = inputEntry.value.trim().toUpperCase();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            // 提取前8个ABCD选项
+            const validOptions = [];
+            for (const char of inputStr) {
+                if (['A', 'B', 'C', 'D'].includes(char)) {
+                    validOptions.push(char);
+                    if (validOptions.length === 8) break;
+                }
+            }
+
+            // 检查是否获取了8个有效选项
+            if (validOptions.length < 8) {
+                alert(`需要8个ABCD选项，只找到${validOptions.length}个！`);
+                return;
+            }
+
+            // 统计各类型数量
+            const typeCounts = { A: 0, B: 0, C: 0, D: 0 };
+            validOptions.forEach(option => typeCounts[option]++);
+
+            // 计算百分比
+            const total = 8;
+            const percentages = {};
+            for (const [type, count] of Object.entries(typeCounts)) {
+                percentages[type] = Math.round(count / total * 100 * 10) / 10;
+            }
+
+            // 按百分比从高到低排序，忽略0%的类型
+            const sortedPercentages = Object.entries(percentages)
+                .filter(([_, percent]) => percent > 0)
+                .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+            // 构建结果字符串
+            let resultStr = "";
+
+            // 找出得分最高的类型（可能有多个）
+            if (sortedPercentages.length > 0) {
+                const maxPercent = sortedPercentages[0][1];
+                const mainTypes = sortedPercentages.filter(([_, percent]) => percent === maxPercent);
+                
+                // 添加主类型描述
+                if (mainTypes.length === 1) {
+                    resultStr += "【单主类型】：\n";
+                } else {
+                    resultStr += "【多主类型】：\n";
+                }
+                
+                if (mainTypes.length < 3) {
+                    mainTypes.forEach(([typeCode]) => {
+                        resultStr += getTypeDescription(typeCode) + "\n";
+                    });
+                }
+            }
+
+            // 添加所有类型百分比信息（从高到低排列，忽略0%）
+            const percentageParts = sortedPercentages.map(([typeCode, percent]) => {
+                return `${getTypeName(typeCode)}：${percent}%`;
+            });
+
+            if (percentageParts.length > 0) {
+                resultStr += "【" + percentageParts.join("；") + "】";
+            }
+
+            // 检查是否已有答案
+            const optionKey = validOptions.join('');
+            if (data.hbdi[optionKey]) {
+                optionSelect.value = optionKey;
+                showAnswer();
+                return;
+            }
+
+            // 更新当前答案
+            currentAnswers[optionKey] = resultStr;
+            data.hbdi[optionKey] = resultStr;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = optionKey;
+            showAnswer();
+            saveData();
+        }
+
+        function getTypeDescription(typeCode) {
+            const descriptions = {
+                'A': "【蓝脑】我是'理性我'，喜欢在收集事实资料后再做出决定。\n" +
+                     "思维方式是'理性我'。这类人通常喜欢在收集事实资料后再做出决定，喜欢通过理性的逻辑思考引导他人。他们通常都善于理财，还能够很好地解决技术问题。理性型自我常会被缺乏逻辑性的意见、过分强调个人感受及含糊不清的指令搞得很沮丧。",
+                'B': "【绿脑】我是'稳妥我'，愿意按部就班地生活。\n" +
+                     "思维方式是'稳妥我'。他们愿意按部就班地生活，并根据实用、程序化的原则做出决定。工作中，像这样的'稳妥型自我'通常扮演的都是管理、组织或行政等角色。即使是娱乐，他们也喜欢选择那些要求事先计划的活动，如露营、钓鱼、旅游等。对日程不明确、突如其来的人或事、以及无截止期之类的情况很无奈。",
+                'C': "【红脑】我是'感觉我'，善于表达、敏感而且能够领会他人的需要。\n" +
+                     "偏好是'感觉我'。这类人群的人都善于表达、敏感而且能够领会他人的需要。工作上，像这样的人大都是老师或者培训师，再不就是销售、作家、音乐家、艺术家、社会工作者或其他可以帮助他人的需要善于表达的职业。娱乐时，这种'情绪型'的人喜欢阅读、散步或者边听音乐边放松。缺乏人际沟通、毫无感情色彩的评论或者不愿意眼神交流的人常常会使以感觉为主导的人感到受挫折。",
+                'D': "【黄脑】我是'探索我'，期望打破常规，喜欢进行设想。\n" +
+                     "偏好'探索我'。所有这样偏好的人都是风险的承担者。期望打破常规，喜欢进行设想，能真正享受惊奇。作为探索者能享受成为企业家、艺术家、咨询师或者战略家而带来的身由感。由于他们的职业往往是激情所在，所以很难区分他们的工作与兴趣爱好。"
+            };
+            return descriptions[typeCode] || "";
+        }
+
+        function getTypeName(typeCode) {
+            const typeNames = {
+                'A': '理性务实型',
+                'B': '稳妥规划型',
+                'C': '感性共情型',
+                'D': '创新探索型'
+            };
+            return typeNames[typeCode] || '未知类型';
+        }
+
+        // 分析虚伪指数测试输入
+        function analyzeVirtualIndexInput() {
+            const inputStr = inputEntry.value.trim().toUpperCase();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            // 提取前9个ABC选项
+            const validOptions = [];
+            for (const char of inputStr) {
+                if (['A', 'B', 'C'].includes(char)) {
+                    validOptions.push(char);
+                    if (validOptions.length === 9) break;
+                }
+            }
+
+            // 检查是否获取了9个有效选项
+            if (validOptions.length < 9) {
+                alert(`需要9个ABC选项，只找到${validOptions.length}个！`);
+                return;
+            }
+
+            // 计算得分
+            let score = 28; // 全选A的基准分
+            const scoreChanges = [
+                [-6, -11],   // 第1题: B减6, C减11
+                [11, 5],      // 第2题: B加11, C加5
+                [11, 5],      // 第3题: B加11, C加5
+                [11, 5],      // 第4题: B加11, C加5
+                [5, 11],      // 第5题: B加5, C加11
+                [5, -6],      // 第6题: B加5, C减6
+                [-6, -11],    // 第7题: B减6, C减11
+                [5, 11],      // 第8题: B加5, C加11
+                [5, 11]       // 第9题: B加5, C加11
+            ];
+
+            validOptions.forEach((option, i) => {
+                if (option === 'B') {
+                    score += scoreChanges[i][0];
+                } else if (option === 'C') {
+                    score += scoreChanges[i][1];
                 }
             });
-            
-            // 如果URL中有类型参数，自动加载
-            const urlParams = new URLSearchParams(window.location.search);
-            const typeParam = urlParams.get('type');
-            if (typeParam && mbtiData[typeParam.toUpperCase()]) {
-                mbtiSelect.value = typeParam.toUpperCase();
-                displayMBTIDetails(typeParam.toUpperCase());
-            }
-        });
 
-        // 显示MBTI类型详情
-        function displayMBTIDetails(type) {
-            const data = mbtiData[type];
-            if (!data) {
-                console.error('未找到该类型的数据:', type);
+            // 根据得分给出结果
+            let result;
+            if (0 <= score && score <= 24) {
+                result = `${validOptions.join('')}的虚伪指数为：${score}，属于不虚伪的人群。说实话，你其实很不理解为什么人们都要带上一个虚假的面具示人呢？你天生就心直口快，也不怕得罪人，在你看来，一个人要是不能说出自己想说的话，岂不太对不起自己，你可是从来不会委屈了自己的。你有自己信仰的生存方式，决不会同流合污，你只愿意坚持自己的处世之道，那就是坦率与真诚。你的身边也围绕了许多像你一样纯真的朋友，你们相互信任，真诚相待，不需要任何的伪饰。真诚待人这点很好，但是也要学会保护自己，毕竟，不是每个人都能同你一样表里如一的。`;
+            } else if (25 <= score && score <= 50) {
+                result = `${validOptions.join('')}的虚伪指数为：${score}，属于不太虚伪的人群。你很清楚虚伪的重要性，但是，个性使然，你又实在不习惯口是心非的处世之道。而且，你虚伪的技巧又实在不太高明，让人一眼就能看出来你在'使诈'。说起来，你已经算是够真诚的了，就这样背上个虚伪之名真是有点委屈你了。不过，谁叫你是那种只要一讲心不由衷的话，就会不由自主地紧张，一紧张起来，哪还能表现的泰然自若呢？任谁都看出来了。但是，你绝对是个可造之才，只要能过的了自己这关，你照样能面不改色心不跳的说出口是心非的话。不过，要使你实在没办法说服自己的话，那就脱下虚伪的外衣，做真正的自己，岂不也能落个一身轻松。`;
+            } else if (51 <= score && score <= 74) {
+                result = `${validOptions.join('')}的虚伪指数为：${score}，属于比较虚伪的人群。虽说你还没有那般出神入化的演技，想道要哭就能马上潸然泪下，但是你虚伪的指数也绝对的堪称一流。你很明白'虚伪'的处世哲学，也会在适当的时候虚伪一把，来为自己赢得一些东西。但是，你还没有彻底的迷失自我，大多时候，你还是宁愿以本来的面目示人。虚伪只是你用来保护自己不被伤害的外衣，除此之外，你丝毫没有害人之心，不过，人在江湖，身不由己，有些时候，你还是会表现得很势利。总的来讲，你有着最一流的'虚伪'潜质，又足够的冷静清醒，进一步，你能百分百虚伪，退一步，你也能百分百真性情。至于该何去何从，就要看你自己想要得是什么了。`;
+            } else if (75 <= score && score <= 99) {
+                result = `${validOptions.join('')}的虚伪指数为：${score}，你的道行不是一般的深啊！你攻于心计的本事已经到达了炉火纯青的境界，绝不会看出你言行中表里不一的地方。你深谙'见人说人话，见鬼说鬼话'这一社交领域的黄金定律，虚伪到了这般程度，你并没有感到周身的不自在，因为你完全不必去刻意装样子，这一定律的精髓对你来讲早已是烂熟于心了。你的处世之道使你在人际交往中如鱼得水，确实为你赚得了不少好处。但是，冷静下来时，也不妨好好想想，现在的自己真的是自己所期望和样子吗？而现在的一切真的就是自己想要得吗？想明白了，才能从容潇洒的生存于世，否则，失去自我只换来些无谓的东西就得不偿失了。`;
+            } else {
+                result = `${validOptions.join('')}的虚伪指数为：${score}，得分超出正常范围。`;
+            }
+
+            // 检查是否已有答案
+            const optionKey = validOptions.join('');
+            if (data.virtualIndex[optionKey]) {
+                optionSelect.value = optionKey;
+                showAnswer();
                 return;
             }
-            
-            const table = document.getElementById('resultTable');
-            if (!table) {
-                console.error('未找到结果表格');
-                return;
-            }
-            
-            // 清空表格
-            table.innerHTML = '';
-            
-            // 创建表格内容
-            const rows = [
-                ['MBTI类型', `<span class="characteristic">${type} - ${data.代号}</span>`],
-                ['性格优点', data.优点],
-                ['性格缺点', data.缺点],
-                ['人生座右铭', `<span class="characteristic">"${data.座右铭}"</span>`],
-                ['最佳伴侣', data.最佳伴侣],
-                ['适合岗位', data.适合岗位],
-                ['受欢迎程度排名', data.受欢迎程度排名],
-                ['稀有度', data.稀有度],
-                ['恋爱脑表现', data.恋爱脑表现],
-                ['对应动物', `${data.对应动物} <span class="animal-icon">${getAnimalIcon(data.对应动物)}</span>`],
-                ['人生总结', `<div class="life-summary">${data.人生总结}</div>`]
-            ];
-            
-            // 添加行到表格
-            rows.forEach(row => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <th>${row[0]}</th>
-                    <td>${row[1]}</td>
-                `;
-                table.appendChild(tr);
-            });
+
+            // 更新当前答案
+            currentAnswers[optionKey] = result;
+            data.virtualIndex[optionKey] = result;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = optionKey;
+            showAnswer();
+            saveData();
         }
 
-        // 根据动物名称获取对应的emoji图标
-        function getAnimalIcon(animal) {
-            const icons = {
-                "猫头鹰": "🦉",
-                "章鱼": "🐙",
-                "狮子": "🦁",
-                "狐狸": "🦊",
-                "狼": "🐺",
-                "鹿": "🦌",
-                "海豚": "🐬",
-                "鹦鹉": "🦜",
-                "蚂蚁": "🐜",
-                "大象": "🐘",
-                "蜜蜂": "🐝",
-                "狗": "🐶",
-                "猎豹": "🐆",
-                "猫": "🐱",
-                "鹰": "🦅",
-                "孔雀": "🦚",
-                "猴子": "🐵"
+        // 分析虚拟梦境测试输入
+        function analyzeVirtualDreamInput() {
+            const inputStr = inputEntry.value.trim().toUpperCase();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            // 提取前5个ABCD选项
+            const validOptions = [];
+            for (const char of inputStr) {
+                if (['A', 'B', 'C', 'D'].includes(char)) {
+                    validOptions.push(char);
+                    if (validOptions.length === 5) break;
+                }
+            }
+
+            // 检查是否获取了5个有效选项
+            if (validOptions.length < 5) {
+                alert(`需要5个ABCD选项，只找到${validOptions.length}个！`);
+                return;
+            }
+
+            const [firstOption, secondOption, thirdOption, fourthOption, fifthOption] = validOptions;
+            
+            // 检查第一、二、三题选项只能是A或B
+            if (!['A', 'B'].includes(firstOption)) {
+                alert("第1题只能选择A或B！");
+                return;
+            }
+            if (!['A', 'B', 'C'].includes(secondOption)) {
+                alert("第2题只能选择A或B或C！");
+                return;
+            }
+            if (!['A', 'B'].includes(thirdOption)) {
+                alert("第3题只能选择A或B！");
+                return;
+            }
+            
+            // 检查第三题选项与第四、五题选项的规则
+            if (thirdOption === 'A' && (!['A', 'B'].includes(fourthOption) || !['A', 'B'].includes(fifthOption)) {
+                alert("第三题选择A时，第四、五题必须选择A或B！");
+                return;
+            } else if (thirdOption === 'B' && (!['C', 'D'].includes(fourthOption) || !['C', 'D'].includes(fifthOption)) {
+                alert("第三题选择B时，第四、五题必须选择C或D！");
+                return;
+            }
+            
+            // 检查是否已有答案
+            const optionKey = validOptions.join('');
+            if (data.virtualDream[optionKey]) {
+                optionSelect.value = optionKey;
+                showAnswer();
+                return;
+            }
+
+            // 分析每个选项
+            const question1 = {
+                "A": "具有安全感，不怕陷入困境",
+                "B": "缺少安全感，做事相对谨慎"
             };
-            return icons[animal] || "";
+            
+            const question2 = {
+                "A": "善于掩饰自己，重视他人对自己的看法",
+                "B": "内心有孤独感，希望得到他人的关注",
+                "C": "比较神秘，喜欢新奇的体验和不一样的生活"
+            };
+            
+            const question3 = {
+                "A": "看似接纳自己，实则不知道如何去改变",
+                "B": "完美主义者，过得并不快乐，内心藏着很多复杂的感情"
+            };
+            
+            const question4 = {
+                "A": "渴望内心被敞开，被人了解，又担心不好的一面被暴露，处于矛盾的两难境地",
+                "B": "尽管有一些灰色情节，但希望通过爱情来平衡自己的内心",
+                "C": "很难被他人理解，你开始怀疑这是不是自己的问题",
+                "D": "你希望改变现状，渐渐遗忘那些让你痛苦的事"
+            };
+            
+            const question5 = {
+                "A": "逃避对自我的反思，压抑内心的自我，使自己拥有宁静的生活",
+                "B": "你愿意进行自我反思以赢取内心的坦荡",
+                "C": "你有依赖思想，真正想了解自己，你需要更大的勇气",
+                "D": "那空着的床，意味着你还没有找到你真正的归属"
+            };
+
+            // 构建结果字符串
+            let resultStr = `${firstOption}${secondOption}${thirdOption}${fourthOption}${fifthOption}：通过对梦的反应了解真实的自我，测试结果发现你具有如下特点：`;
+            resultStr += `${question1[firstOption] || '未知选项XXX1'}；`;
+            resultStr += `${question2[secondOption] || '未知选项XXX2'}；`;
+            resultStr += `${question3[thirdOption] || '未知选项XXX3'}；`;
+            resultStr += `${question4[fourthOption] || '未知选项XXX4'}；`;
+            resultStr += `${question5[fifthOption] || '未知选项XXX5'}。`;
+
+            // 更新当前答案
+            currentAnswers[optionKey] = resultStr;
+            data.virtualDream[optionKey] = resultStr;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = optionKey;
+            showAnswer();
+            saveData();
         }
+
+        // 分析另一半测试输入
+        function analyzeOtherHalfInput() {
+            const inputStr = inputEntry.value.trim();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            // 定义动物映射
+            const animalMapping = {
+                "虎": {
+                    "expect": "【老虎 - 象征力量和权威】代表你会选择一个意志坚定、野心勃勃，并且经历丰富的人成为你的另一半。你期望另一半是一个强大的人，能带给你满满的安全感，让你可以放心依靠，只要对象是可靠又能让你安心的人，你就会感到非常幸福。",
+                    "fear": "【老虎 - 象征力量和权威】你最害怕遇到过于强势的另一半。因为不想要自己的生活中被被人束缚和牵绊，如果另一半不能给你足够的自由，或是强迫你做某些事，你会宁可放弃这段感情。"
+                },
+                "狗": {
+                    "expect": "【狗 - 象征忠诚和奉献精神】你最期待能遇见无条件信任你、跟随你和为你付出的人。期望自己能获得另一半的支持，只要对方愿意为你付出就会感到安心，相信这个人是可以和自己长久在一起的对象。",
+                    "fear": "【狗 - 象征忠诚和奉献精神】你最不想遇到在别人面前没有信心、战战兢兢过日子且努力讨好别人的另一半。若另一半为人懦弱没有自信，你觉得会是感情生活中最大的不幸。"
+                },
+                "羊": {
+                    "expect": "【羊 - 象征温暖、安全感】你的理想型首要条件就是一定要够温暖，且能细心照顾你，让你拥有足够的安全感和被爱的感觉。",
+                    "fear": "【羊 - 象征温暖、安全感】你最害怕自己的另一半太过安于现状、没有自我提升，或是把日子过得一成不变，每天只会日复一日做相同的事，在没有任何改变的状态与生活一直老去。"
+                },
+                "鹉": {
+                    "expect": "【鹦鹉 - 象征谈天和活力】你希望自己的另一半是一个活泼、健谈又有幽默感的人。只要对方知道如何逗你开心经常对你开一些小玩笑，就会让你觉得和Ta见面是一件很快乐的事。",
+                    "fear": "【鹦鹉 - 象征谈天和活力】你最不喜欢自己的另一半过于唠叨、吵闹和爱抱怨，如果对方每天懒散度日且不努力上进，会让你直接放弃掉这段感情。"
+                },
+                "龟": {
+                    "expect": "【乌龟 - 象征勤奋、耐心】你喜欢真诚、谨慎的对象，即使Ta没办法帮你解决烦恼，但还是凡是必须要陪伴在你身边，只要Ta能耐心陪着你，就会让你觉得可靠而变得安心。",
+                    "fear": "【乌龟 - 象征勤奋、耐心】你最害怕另一半是外表过于严肃、不苟言笑的人，无论在遇到什么事情都一脸正经、毫无感情的人会让你觉得难以接近。"
+                }
+            };
+
+            // 提取两个关键字
+            const animals = [];
+            for (const char of inputStr) {
+                if (animalMapping[char]) {
+                    animals.push(char);
+                    if (animals.length === 2) break;
+                }
+            }
+
+            if (animals.length < 2) {
+                alert("需要输入两个关键字（虎、狗、羊、鹉、龟）！");
+                return;
+            }
+
+            // 构建结果字符串
+            let resultStr = `【你期望的另一半】\n${animalMapping[animals[0]].expect}\n\n`;
+            resultStr += `【你最害怕的另一半】\n${animalMapping[animals[1]].fear}`;
+
+            // 检查是否已有答案
+            const optionKey = animals.join('');
+            if (data.otherHalf[optionKey]) {
+                optionSelect.value = optionKey;
+                showAnswer();
+                return;
+            }
+
+            // 更新当前答案
+            currentAnswers[optionKey] = resultStr;
+            data.otherHalf[optionKey] = resultStr;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = optionKey;
+            showAnswer();
+            saveData();
+        }
+
+        // 分析人生主角测试输入
+        function analyzeLifeInput() {
+            const inputStr = inputEntry.value.trim();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            // 检查是否有5个ABCD选项
+            const abcdMatches = inputStr.match(/[a-dA-D]/g) || [];
+            if (abcdMatches.length !== 5) {
+                alert(`需要输入5个ABCD选项，当前输入了${abcdMatches.length}个！`);
+                return;
+            }
+
+            // 统计ABCD选项（不区分大小写）
+            const countA = (inputStr.match(/[aA]/g) || []).length;
+            const countB = (inputStr.match(/[bB]/g) || []).length;
+            const countC = (inputStr.match(/[cC]/g) || []).length;
+            const countD = (inputStr.match(/[dD]/g) || []).length;
+
+            // 构建结果字符串
+            const resultParts = [];
+            if (countA > 0) resultParts.push(`${countA}a`);
+            if (countB > 0) resultParts.push(`${countB}b`);
+            if (countC > 0) resultParts.push(`${countC}c`);
+            if (countD > 0) resultParts.push(`${countD}d`);
+
+            const resultStr = resultParts.join('');
+
+            // 检查是否已有答案
+            if (data.life[resultStr]) {
+                optionSelect.value = resultStr;
+                showAnswer();
+                return;
+            }
+
+            // 没有答案则显示统计结果
+            const answer = `输入: ${inputStr}\n\n结果: ${resultStr}\n\n(这是新分析结果，您可以编辑此解释)`;
+            currentAnswers[resultStr] = answer;
+            data.life[resultStr] = answer;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = resultStr;
+            showAnswer();
+            saveData();
+        }
+
+        // 分析原生家庭测试输入
+        function analyzeFamilyInput() {
+            const inputStr = inputEntry.value.trim().toUpperCase();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            // 提取前5个ABCD选项
+            const validOptions = [];
+            for (const char of inputStr) {
+                if (['A', 'B', 'C', 'D'].includes(char)) {
+                    validOptions.push(char);
+                    if (validOptions.length === 5) break;
+                }
+            }
+
+            // 检查是否获取了5个有效选项
+            if (validOptions.length < 5) {
+                alert(`需要5个ABCD选项，只找到${validOptions.length}个！`);
+                return;
+            }
+
+            // 检查是否已有答案
+            const optionKey = validOptions.join('');
+            if (data.family[optionKey]) {
+                optionSelect.value = optionKey;
+                showAnswer();
+                return;
+            }
+
+            // 分析每个选项
+            const results = [];
+            const typeCounts = {};
+
+            validOptions.slice(0, 5).forEach((option, i) => {
+                const mapping = familyMappings[i];
+                const result = mapping[option] || "未知类型";
+                results.push(result);
+                typeCounts[result] = (typeCounts[result] || 0) + 1;
+            });
+
+            // 计算百分比
+            const total = 5;
+            const percentages = {};
+            for (const [type, count] of Object.entries(typeCounts)) {
+                percentages[type] = `${Math.round(count / total * 100)}%`;
+            }
+
+            // 生成结果字符串
+            let resultStr = `${optionKey}：${results.join('/')}。`;
+            resultStr += "其中：";
+            const percentageEntries = Object.entries(percentages);
+            percentageEntries.forEach(([typeName, percent], i) => {
+                if (i === percentageEntries.length - 1) {
+                    // 如果是最后一个元素，添加句号
+                    resultStr += `${typeName}占比${percent}。`;
+                } else {
+                    resultStr += `${typeName}占比${percent}，`;
+                }
+            });
+
+            // 更新当前答案
+            currentAnswers[optionKey] = resultStr;
+            data.family[optionKey] = resultStr;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = optionKey;
+            showAnswer();
+            saveData();
+        }
+
+        // 分析痣湖由测试输入
+        function analyzeZhihuyouInput() {
+            const inputStr = inputEntry.value.trim();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            let resultPart1 = "###11111";
+            if (inputStr.includes("镜") || inputStr.includes("鏡") || inputStr.includes("睛")) {
+                resultPart1 = "###选择眼镜：表示你注重对方的智慧. ";
+            } else if (inputStr.includes("帽")) {
+                resultPart1 = "###选择帽子：代表你希望能找个有气质和味道的 ";
+            } else if (inputStr.includes("胡")) {
+                resultPart1 = "###选择胡子：表示你会钟情于事业成功的类型 ";
+            } else if (inputStr.includes("痣")) {
+                resultPart1 = "###选择痣：则说明你能充分发挥母性的本能，那去找一个需要你照顾的人吧 ";
+            } else if (inputStr.includes("泪") || inputStr.includes("淚")) {
+                resultPart1 = "###选择眼泪：表示你需要一个温柔会照顾人的对方. ";
+            }
+
+            let resultPart2 = "###22222";
+            if (inputStr.includes("树") || inputStr.includes("木") || inputStr.includes("石") || inputStr.includes("松")) {
+                resultPart2 = "###加木头和石头：你是个用情专一的人. ";
+            } else if (inputStr.includes("路") || inputStr.includes("道")) {
+                resultPart2 = "###道路：你是个吃了碗里又想着锅里的人，而且嫉妒心强  ";
+            } else if (inputStr.includes("琥") || inputStr.includes("湖") || inputStr.includes("泊") || inputStr.includes("水") || inputStr.includes("河")) {
+                resultPart2 = "###湖：极度的没有自信  ";
+            } else if (inputStr.includes("云")) {
+                resultPart2 = "###云：永远不会象对方敞开心扉，是一个不容易为感情所动的人  ";
+            }
+
+            let resultPart3 = "###33333";
+            if (inputStr.includes("由")) {
+                resultPart3 = "###由：你现在状态非常的好，前景一片光明，现在无论做什么事都是最好的时机  ";
+            } else if (inputStr.includes("甲")) {
+                resultPart3 = "###甲：你保持着很好的状态，虽然你有很多担心和不安，但相信那都只是暂时的 ";
+            } else if (inputStr.includes("田")) {
+                resultPart3 = "###田：由于对将来的事情充满着不稳定感，因此很容易对你目前所做的任何事渐渐冷淡 .  ";
+            } else if (inputStr.includes("目")) {
+                resultPart3 = "###目：慎重谨慎的性格，即使交朋友也会顾忌再三   ";
+            } else if (inputStr.includes("旦")) {
+                resultPart3 = "###旦：心享事成者，你一切的梦想都会如愿以偿的  ";
+            } else if (inputStr.includes("申")) {
+                resultPart3 = "###选择申：你处于探索与过渡期，需在理想与现实间寻找支点。当下的犹豫是智慧的沉淀，清晰的路径将在反复权衡后浮现。 ";
+            } else if (inputStr.includes("旧")) {
+                resultPart3 = "###选择旧：你是一个重视传统和经验的人，倾向于依赖过去的经验来做决策。你对新变化可能持谨慎态度，但你的稳定性是你的一大优势。";
+            } else if (inputStr.includes("白")) {
+                resultPart3 = "###选择白：你更关注内在价值，你的清晰视角能帮助他人看清本质，但需避免因坚持理想而脱离实际。 ";
+            } else if (inputStr.includes("月")) {
+                resultPart3 = "###选择月：你没有选择常规的\"田、目、旦\"等字，而是将\"日\"转化为\"月\"，说明你的思维方式更偏向：联想丰富：善于从抽象角度思考问题，不拘泥于现实框架。直觉敏锐：比起逻辑分析，你可能更依赖灵感或内在感受做决策。追求深层意义：对情感、艺术或哲学层面的共鸣更重视。";
+            }
+
+            const resultStr = resultPart1 + resultPart2 + resultPart3;
+
+            // 检查是否已有答案
+            if (data.zhihuyou[inputStr]) {
+                optionSelect.value = inputStr;
+                showAnswer();
+                return;
+            }
+
+            // 更新当前答案
+            currentAnswers[inputStr] = resultStr;
+            data.zhihuyou[inputStr] = resultStr;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = inputStr;
+            showAnswer();
+            saveData();
+        }
+
+        // 分析选三种动物测试输入
+        function analyzeAnimalInput() {
+            const inputStr = inputEntry.value.trim();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            const validAnimals = [];
+            for (const char of inputStr.slice(0, 10)) {
+                if (animalMappings[char]) {
+                    validAnimals.push(char);
+                    if (validAnimals.length === 3) break;
+                }
+            }
+
+            if (validAnimals.length < 3) {
+                alert("需要选择三种动物！");
+                return;
+            }
+
+            let resultStr = "";
+            resultStr += `【排在第一喜欢的: 代表你期望给别人留下的一个印象】${animalMappings[validAnimals[0]]}\n`;
+            resultStr += `【排在第二喜欢的: 代表别人眼中的你】${animalMappings[validAnimals[1]]}\n`;
+            resultStr += `【排在第三喜欢的: 代表你真实的自己】${animalMappings[validAnimals[2]]}\n`;
+
+            // 检查是否已有答案
+            if (data.animal[inputStr]) {
+                optionSelect.value = inputStr;
+                showAnswer();
+                return;
+            }
+
+            // 更新当前答案
+            currentAnswers[inputStr] = resultStr;
+            data.animal[inputStr] = resultStr;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = inputStr;
+            showAnswer();
+            saveData();
+        }
+
+        // 分析恐婚族测试输入
+        function analyzeAfraidMarriageInput() {
+            const inputStr = inputEntry.value.trim().toUpperCase();
+            if (!inputStr) {
+                alert("请输入选项序列！");
+                return;
+            }
+
+            // 提取前5个ABCD选项
+            const validOptions = [];
+            for (const char of inputStr) {
+                if (['A', 'B', 'C', 'D'].includes(char)) {
+                    validOptions.push(char);
+                    if (validOptions.length === 5) break;
+                }
+            }
+
+            // 检查是否获取了5个有效选项
+            if (validOptions.length < 5) {
+                alert(`需要5个ABCD选项，只找到${validOptions.length}个！`);
+                return;
+            }
+
+            // 计算得分
+            const scoreMapping = { 'A': 1, 'B': 4, 'C': 3, 'D': 2 };
+            const scoreDetails = [];
+            let totalScore = 0;
+            let allOption = "";
+            
+            validOptions.forEach(option => {
+                const score = scoreMapping[option];
+                scoreDetails.push(`${option}=${score}`);
+                totalScore += score;
+                allOption += option;
+            });
+
+            // 根据得分给出结果
+            let result;
+            if (5 <= totalScore && totalScore <= 8) {
+                result = `【勿滥型：${allOption}】\n你是较会走中庸、平衡之道的人，既不会拒婚，也不会非结婚不可，关键就在「宁缺勿滥」这四个字。\n换言之，你不会为了结婚而结婚，也不会因恐婚而拒婚；这两种状况，在你看来，都非明智之举。在现今较自由、开放的社会中，结婚不再是必须的选择，而是选项之一；\n你是一个会思考，也不怕独立自主的人，因此，你不会盲从，更了解要为自己的选择负责。`;
+            } else if (9 <= totalScore && totalScore <= 12) {
+                result = `【向往型：${allOption}】\n你对于婚姻关系是非常向往的，就像是人生的归属，因此，你不会是恐婚的人，而是期望着能走进婚姻的礼堂。\n你对于未来有浪漫的期望，希望有一位可相互照顾、白头偕老的人，共同面对人生，因此，你很需要身边有人陪伴、有肩膀可以依靠。\n若是自己孤伶伶地过日子，你会认为自己太失败，还会被人以为没有价值，所以你是不会主动拒婚的。`;
+            } else if (13 <= totalScore && totalScore <= 16) {
+                result = `【徘徊型：${allOption}】\n你是个较善于盘算利弊得失的人，对于生活中大大小小的事情，都会衡量一下所得和所失，何况婚姻这种终身大事，怎能不好好算一算成本。\n因此，在算盘没打清楚之前，你不会贸然做决定。与其说你害怕承诺，不如说你最担心的是「血本无归」；\n不过，婚姻中的变数太多，可能变成一笔算不清的糊涂账，你也只好在婚姻的门口，徘徊不决，伤脑筋了。`;
+            } else if (17 <= totalScore && totalScore <= 20) {
+                result = `【单飞型：${allOption}】\n由于你是个主观强又比较坚执己见的人，因此，对于婚姻的抗拒或负面想法，一旦形成之后就难改变。不论是源于个人经验、信仰或成见，目前你仍是「恐婚族」中的居民。\n你认为即使单飞有点寂寞，不过相较于婚姻中的种种纠结、痛苦，甚至背叛，你还是宁可选择独善其身的清冷，何况，若有心灵的充实和寄托，一个人也是可以活得有滋味呀。`;
+            } else {
+                result = "未知得分范围，请检查输入。";
+            }
+
+            // 构建完整的得分信息
+            const scoreInfo = ""; // 可以添加得分详情如果需要
+            const resultStr = scoreInfo + result;
+
+            // 检查是否已有答案
+            const optionKey = validOptions.join('');
+            if (data.afraidMarriage[optionKey]) {
+                optionSelect.value = optionKey;
+                showAnswer();
+                return;
+            }
+
+            // 更新当前答案
+            currentAnswers[optionKey] = resultStr;
+            data.afraidMarriage[optionKey] = resultStr;
+
+            // 更新界面但不保存到文件
+            updateOptionMenu();
+            optionSelect.value = optionKey;
+            showAnswer();
+            saveData();
+        }
+
+        // 编辑当前答案
+        function editAnswer() {
+            const selectedOption = optionSelect.value;
+            const newAnswer = answerText.value.trim();
+            currentAnswers[selectedOption] = newAnswer;
+            
+            // 更新对应的数据容器
+            switch(currentTestType) {
+                case 'life':
+                    data.life[selectedOption] = newAnswer;
+                    break;
+                case 'family':
+                    data.family[selectedOption] = newAnswer;
+                    break;
+                case 'zhihuyou':
+                    data.zhihuyou[selectedOption] = newAnswer;
+                    break;
+                case 'threeAnimals':
+                    data.animal[selectedOption] = newAnswer;
+                    break;
+                case 'afraidMarriage':
+                    data.afraidMarriage[selectedOption] = newAnswer;
+                    break;
+                case 'otherHalf':
+                    data.otherHalf[selectedOption] = newAnswer;
+                    break;
+                case 'virtualDream':
+                    data.virtualDream[selectedOption] = newAnswer;
+                    break;
+                case 'virtualIndex':
+                    data.virtualIndex[selectedOption] = newAnswer;
+                    break;
+                case 'hbdi':
+                    data.hbdi[selectedOption] = newAnswer;
+                    break;
+            }
+            
+            saveData();
+            alert("答案已保存。");
+        }
+
+        // 加载数据
+        function loadData() {
+            const savedData = localStorage.getItem('psychologyData');
+            if (savedData) {
+                try {
+                    const parsedData = JSON.parse(savedData);
+                    Object.assign(data, parsedData);
+                    updateOptionMenu();
+                    alert("数据加载成功！");
+                } catch (e) {
+                    alert("加载数据时出错：" + e.message);
+                }
+            } else {
+                alert("没有找到保存的数据。");
+            }
+        }
+
+        // 保存数据
+        function saveData() {
+            try {
+                localStorage.setItem('psychologyData', JSON.stringify(data));
+            } catch (e) {
+                alert("保存数据时出错：" + e.message);
+            }
+        }
+
+        // 初始化应用
+        init();
     </script>
 </body>
 </html>

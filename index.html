@@ -195,12 +195,12 @@
             
             <textarea id="answerText" readonly></textarea>
             
-            <div class="button-group">
-                <button id="editBtn">编辑当前答案</button>
-                <button id="reloadBtn">重新加载数据</button>
-                <button id="loadFileBtn">选择本地数据文件</button>
-                <input type="file" id="fileInput" accept=".json">
-            </div>
+			<div class="button-group">
+				<button id="editBtn">编辑当前答案</button>
+				<button id="reloadBtn">重新加载数据</button>
+				<button id="loadFileBtn">选择本地数据文件</button>
+				<input type="file" id="fileInput" accept=".json">
+			</div>
         </div>
     </div>
 
@@ -321,93 +321,116 @@
         }
 
         // 加载数据
-        async function loadData() {
-            try {
-                // 显示加载状态
-                document.getElementById('loading').style.display = 'block';
-                document.getElementById('app-content').style.display = 'none';
-                
-                // 检查是否有本地存储的数据
-                const savedData = localStorage.getItem('psychologyData');
-                if (savedData) {
-                    const jsonData = JSON.parse(savedData);
-                    Object.assign(data, jsonData);
-                    console.log('从本地存储加载数据成功');
-                } else {
-                    console.log('没有找到本地存储的数据，等待用户上传');
-                    document.getElementById('loading').textContent = '请选择本地JSON2数据文件';
-                    return;
-                }
-                
-                console.log('数据加载成功');
-                
-                // 隐藏加载状态，显示应用内容
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('app-content').style.display = 'block';
-                
-                initApp(); // 初始化应用
-            } catch (error) {
-                console.error('加载数据失败:', error);
-                document.getElementById('loading').innerHTML = 
-                    '加载数据失败，请检查文件格式或重新上传。<br>' +
-                    '错误信息: ' + error.message;
-            }
-        }
+		async function loadData() {
+			try {
+				document.getElementById('loading').style.display = 'block';
+				document.getElementById('app-content').style.display = 'none';
+				
+				// 检查是否有本地存储的数据
+				const savedData = localStorage.getItem('psychologyData');
+				if (savedData) {
+					try {
+						const jsonData = JSON.parse(savedData);
+						Object.assign(data, jsonData);
+						console.log('从本地存储加载数据成功');
+						
+						// 隐藏加载状态，显示应用内容
+						document.getElementById('loading').style.display = 'none';
+						document.getElementById('app-content').style.display = 'block';
+						
+						initApp(); // 初始化应用
+					} catch (error) {
+						console.error('解析本地数据失败:', error);
+						document.getElementById('loading').textContent = '本地数据损坏，请重新上传JSON文件';
+					}
+				} else {
+					console.log('没有找到本地存储的数据，等待用户上传');
+					document.getElementById('loading').textContent = '请选择本地JSON数据文件';
+				}
+			} catch (error) {
+				console.error('加载数据失败:', error);
+				document.getElementById('loading').innerHTML = 
+					'加载数据失败，请检查文件格式或重新上传。<br>' +
+					'错误信息: ' + error.message;
+			}
+		}
 
         // 初始化应用
-        function initApp() {
-            // 设置事件监听器
-            testTypeSelect.addEventListener('change', onTestChange);
-            optionSelect.addEventListener('change', onOptionChange);
-            analyzeBtn.addEventListener('click', analyzeInput);
-            editBtn.addEventListener('click', editAnswer);
-            reloadBtn.addEventListener('click', loadData);
+		function initApp() {
+			// 设置事件监听器
+			testTypeSelect.addEventListener('change', onTestChange);
+			optionSelect.addEventListener('change', onOptionChange);
+			analyzeBtn.addEventListener('click', analyzeInput);
+			editBtn.addEventListener('click', editAnswer);
+			reloadBtn.addEventListener('click', loadData);
+			
+			// 文件输入处理（只需设置一次）
+			document.getElementById('loadFileBtn').addEventListener('click', function() {
+				const fileInput = window.innerWidth <= 768 ? 
+					document.getElementById('mobileFileInput') : 
+					document.getElementById('fileInput');
+				fileInput.click();
+			});
+			// 初始化选项
+			updateOptionMenu();
+		}
+		
+        // 修改文件选择处理部分
+        document.getElementById('loadFileBtn').addEventListener('click', function() {
+            // 创建一个新的文件输入元素
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = '.json';
             
-            // 文件输入处理
-            loadFileBtn.addEventListener('click', () => {
-                // 统一使用同一个文件输入元素
-                fileInput.click();
-            });
-            
-            fileInput.addEventListener('change', handleFileSelect);
-            mobileFileInput.addEventListener('change', handleFileSelect);
-            
-            // 初始化选项
-            updateOptionMenu();
-        }
+            // 添加事件监听器
+            fileInput.addEventListener('change', function(e) {
+                handleFileSelect(e).then(() => {
+                    // 处理完成后移除元素
+                    document.body.removeChild(fileInput);
+                });
+            });		
 
-        // 处理文件选择
-        async function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            
-            try {
-                document.getElementById('loading').style.display = 'block';
-                document.getElementById('loading').textContent = '正在加载数据，请稍候...';
-                
-                const jsonData = await loadDataFromFile(file);
-                Object.assign(data, jsonData);
-                
-                // 保存到本地存储
-                localStorage.setItem('psychologyData', JSON.stringify(data));
-                
-                // 隐藏加载状态，显示应用内容
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('app-content').style.display = 'block';
-                
-                initApp(); // 重新初始化应用
-            } catch (error) {
-                console.error('加载文件失败:', error);
-                document.getElementById('loading').innerHTML = 
-                    '加载文件失败，请检查文件格式。<br>' +
-                    '错误信息: ' + error.message;
-            } finally {
-                // 重置文件输入，允许重复选择同一文件
-                event.target.value = '';
-            }
-        }
+		// 统一文件输入处理
+		async function handleFileSelect(event) {
+			const file = event.target.files[0];
+			if (!file) return;
+			
+			try {
+				document.getElementById('loading').style.display = 'block';
+				document.getElementById('loading').textContent = '正在加载数据，请稍候...';
+				
+				const jsonData = await loadDataFromFile(file);
+				Object.assign(data, jsonData);
+				
+				// 保存到本地存储
+				localStorage.setItem('psychologyData', JSON.stringify(data));
+				
+				// 隐藏加载状态，显示应用内容
+				document.getElementById('loading').style.display = 'none';
+				document.getElementById('app-content').style.display = 'block';
+				
+				initApp(); // 重新初始化应用
+			} catch (error) {
+				console.error('加载文件失败:', error);
+				document.getElementById('loading').innerHTML = 
+					'加载文件失败，请检查文件格式。<br>' +
+					'错误信息: ' + error.message;
+			}
+		}
 
-        // 测试类型改变时的处理
+		// 文件选择按钮点击事件
+		document.getElementById('loadFileBtn').addEventListener('click', function() {
+			const fileInput = window.innerWidth <= 768 ? 
+				document.getElementById('mobileFileInput') : 
+				document.getElementById('fileInput');
+			fileInput.click();
+		});
+
+		// 文件输入元素事件监听器
+		document.getElementById('fileInput').addEventListener('change', handleFileSelect);
+		document.getElementById('mobileFileInput').addEventListener('change', handleFileSelect);
+
+		// 测试类型改变时的处理
         function onTestChange() {
             currentTestType = testTypeSelect.value;
             updateOptionMenu();
